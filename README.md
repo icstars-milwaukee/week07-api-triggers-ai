@@ -1,65 +1,85 @@
-# Week 7 — Friendly UI (L7)
+# Week 7 — API, Triggers & AI (L7)
 
-**Mission: make the window so easy that nobody needs a manual.**
+**Mission: give your data a front door, teach it to react, and draft its AI helper.**
 
 ## The Story So Far
 
-The data is loaded and queries work — for *you*. But our users are project managers and planners, not engineers. The RFP is clear: the solution must be **self-service** with **minimal technical background**. If a user needs help, we failed.
+Week 6 ended with data loaded and a first screen showing it. But that screen talks
+straight to the files on one laptop. Real products put a layer in between — an **API** —
+so any screen (yours, a teammate's, the client's) can ask the same questions and get
+the same answers. And the RFP wants more than a window: it wants a tool that reacts
+on its own and answers plain-language questions. That plumbing is this week.
 
 ## The System This Week
 
 ```
   WHAT COMES IN             WHAT WE DO                    WHAT GOES OUT
   ─────────────             ──────────                    ─────────────
-  Working queries      ──►  Design for real people:  ──►  Final solution design
-  Sprint 1 feedback         who are they? what do          UI spec (labels, layout,
-  Mockups (Week 3)          they need in 10 seconds?       words on every screen)
-                            Kill the jargon                Updated sprint plan
+  Loaded tables (W6)   ──►  Build the API:           ──►  Working API endpoints
+  First screen (W6)         /counts /tickets /teams       First trigger working
+  UI spec ideas             Add a trigger that reacts     AI use cases draft
+                            Draft the AI helper           Screen now talks to API
 ```
 
-Where this fits in the machine: **this is the control panel.** A great engine with confusing buttons is a bad machine.
+Where this fits in the machine: **this is the wiring behind the wall.** Users never
+see it — but every screen, alert, and AI answer runs through it.
 
 ## What You Already Know (from class)
 
-- Turning user stories into designs (T7B, this week!)
-- Functions, errors & debugging (T7A, this week!)
+- Functions, errors & debugging (T7A, this week!) — an API is functions that answer
+  over the network, and debugging them is the week's real sport
+- Turning user stories into designs (T7B, this week!) — every endpoint exists to
+  serve a user's question, not the other way round
 
-Class teaches design thinking. **This repo points it at our three real users.**
+Heads up: the AI classes (T8A/T8B) land **next week**. This week you *draft* what the
+AI helper should do; next week's classes sharpen it before you build it into the
+prototype. Draft in pencil.
 
 ## New Words & Ideas (the RFP-only stuff)
 
 | Word | What it really means |
 |------|---------------------|
-| **Self-service** | Users help themselves. No training class, no manual, no calling us. |
-| **Persona** | A pretend-but-realistic user: "Pat the Project Manager checks her team's tickets every morning." |
-| **Jargon** | Insider words that lock people out. `cmdb_ci` is jargon; "the thing that broke" is not. |
-| **Accessibility** | Design that works for everyone — readable colors, clear labels, keyboard-friendly. |
+| **API** | A menu of questions your data answers over the network: ask `/counts`, get counts back. |
+| **Endpoint** | One item on that menu. `/tickets?team=ServiceDesk` is an endpoint with a filter. |
+| **JSON** | The answer's format — data dressed for machines, readable by humans. |
+| **Trigger** | Code that runs when something happens, not when someone clicks: "new export lands → counts refresh", "backlog passes 50 → flag it". |
+| **AI use case** | One sentence: "A user asks the AI ___, and it answers ___ using ___ data." |
 
 ## Your AI Coworker This Week
 
-**AI helps you:**
-- Play your persona: *"Act as a project manager who has never written a query. I'll describe our dashboard screen — tell me where you get confused."*
-- Hunt jargon: *"Here are our screen labels. Flag anything a non-technical manager wouldn't instantly get, and suggest plainer words."*
-- Brainstorm layouts: *"Three common ways to organize a ticket dashboard for scanning speed?" * — then *you* choose and say why.
+**AI helps you (fluency):**
+- Be the debug duck: *"My endpoint returns 500. Here's the error text and the shape of my code (no real data). Walk me through likely causes."*
+- Design the menu: *"A project manager wants to know if her project is still being worked. What 3 endpoints would serve that?"*
+- Pressure-test a trigger: *"When could 'alert when backlog > 50' fire wrongly or too often?"*
+
+**AI is becoming the product (building):** your use cases draft defines what the
+client's AI helper will do — e.g., *"Where is ticket INC0012345?"* answered in plain
+words from your own API. Keep each use case honest: if your API can't answer it,
+the AI can't either.
 
 **You do (AI doesn't):**
-- Make the design decisions and write the UI spec. Your name is on the demo.
-- Test with real humans — grab someone from another team and watch them try it.
+- Write and debug the endpoints. When a number is wrong, *you* trace it.
+- Decide what the trigger watches. It fires on *your* client's real pain, not a demo trick.
 
-**Never:** real client data in AI chats. Persona conversations use made-up ticket examples.
+**Never:** real ticket data in AI chats — table shapes and fake IDs like INC0000001 only.
 
 ## What You Will Build
 
-- [ ] **Personas** — 2–3 realistic users with names, jobs, and morning questions
-- [ ] **Final solution design** — updated with Sprint 1 feedback
-- [ ] **UI spec** — every screen's labels, filters, and words, jargon-free
-- [ ] **Updated sprint plan** — what changed and why
+- [ ] **Three working endpoints** in your team's path — at minimum: counts,
+      a filtered ticket list, and one question from your DEL-1009 queries
+- [ ] **Your week-6 screen fed by the API** instead of reading files directly
+- [ ] **One working trigger** — refresh, threshold alert, or a better one you propose
+- [ ] **AI use cases draft** — 3–5 one-sentence use cases the API can actually serve
 
 ## You're Done When…
 
-…someone outside your team can look at your screen design and answer "which team has the most open tickets?" in under ten seconds, with no help from you.
+…a teammate on a *different* laptop can hit your endpoints and see the same numbers
+your screen shows — and one thing in your system happens without anyone clicking.
 
 ## How This Connects
 
-- **Builds on Week 6:** the queries become the numbers behind each screen.
-- **Feeds into Week 8:** you build these screens for real, with filters and drill-down.
+- **Next week (Week 8):** everything snaps together — UI + API + AI become the
+  prototype, tested against written test cases and rehearsed for the Sprint 2 demo
+  on **Friday 10/23**.
+- The AI classes T8A/T8B arrive next week and grade your use-cases draft against
+  what AI is actually good at.
