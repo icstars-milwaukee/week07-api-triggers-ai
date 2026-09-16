@@ -1,0 +1,7 @@
+# Working databases stay out of Git; the CSVs themselves are the deliverable.
+*.db
+*.sqlite
+node_modules/
+__pycache__/
+
+dashboard.html

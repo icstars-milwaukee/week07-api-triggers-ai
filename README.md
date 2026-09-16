@@ -24,6 +24,19 @@ on its own and answers plain-language questions. That plumbing is this week.
 Where this fits in the machine: **this is the wiring behind the wall.** Users never
 see it — but every screen, alert, and AI answer runs through it.
 
+## The Kit Is In This Repo
+
+| Where | What |
+|---|---|
+|  | Python road: the API + trigger starter, ready to copy into your project |
+|  | Node road: same starter in Node |
+|  +  | SQL road: your .sql files ARE the endpoints; the given server runs them |
+|  | The pencil draft your team fills in |
+|  | The deliverable: what your project does by Friday |
+|  | Monday's workshop deck |
+
+Pick your road's branch for the step-by-step walkthrough:  ·  · .
+
 ## What You Already Know (from class)
 
 - Functions, errors & debugging (T7A, this week!) — an API is functions that answer
