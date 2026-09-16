@@ -1,0 +1,483 @@
+<title>Week 7 — Wire It Up · i.c.stars Milwaukee</title>
+<style>
+  :root{
+    --ink:#161217; --ink-soft:#231C24; --paper:#FAF6F2; --paper-dim:#EFE8E2;
+    --red:#D6003C; --red-deep:#A00030; --grey:#9A9095; --grey-dark:#5C5458;
+    --disp:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --mono:Consolas,"Courier New",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:var(--disp);background:var(--ink);color:var(--paper)}
+  .deck{position:relative;height:100%;width:100%}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:6vh 8vw;opacity:0;visibility:hidden;transform:translateX(4%);
+    transition:opacity .45s ease,transform .45s ease,visibility .45s;overflow-y:auto}
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  @media (prefers-reduced-motion: reduce){.slide{transition:none;transform:none}}
+  .ink{background:var(--ink);color:var(--paper)}
+  .paper{background:var(--paper);color:var(--ink)}
+  .redbg{background:var(--red);color:var(--paper)}
+
+  .eyebrow{font-size:clamp(12px,1.4vw,16px);font-weight:700;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--red);margin-bottom:2.2vh}
+  .redbg .eyebrow{color:var(--paper)}
+  h1{font-weight:900;font-size:clamp(40px,7.2vw,104px);line-height:.98;letter-spacing:-.02em;
+    text-wrap:balance;text-transform:uppercase}
+  h2{font-weight:900;font-size:clamp(28px,4.6vw,66px);line-height:1.02;letter-spacing:-.015em;
+    text-wrap:balance;text-transform:uppercase;margin-bottom:3vh}
+  .sub{font-size:clamp(16px,1.8vw,23px);line-height:1.5;max-width:64ch;color:var(--grey)}
+  .paper .sub{color:var(--grey-dark)}
+  .redbg .sub{color:#FFD9E2}
+  .star{color:var(--red);font-style:normal}
+
+  .brand{position:fixed;top:3.2vh;left:8vw;z-index:40;font-weight:900;
+    font-size:clamp(15px,1.6vw,21px);letter-spacing:-.01em;pointer-events:none}
+  .brand .pipe{font-weight:400;opacity:.55;margin:0 .12em}
+  .brand .mke{font-weight:400;letter-spacing:.22em;text-transform:uppercase;
+    font-size:.62em;vertical-align:.12em;margin-left:.9em;opacity:.75}
+  .tag{position:fixed;bottom:3.2vh;left:8vw;z-index:40;font-size:clamp(11px,1.15vw,14px);
+    letter-spacing:.22em;text-transform:uppercase;color:var(--grey);pointer-events:none}
+  .counter{position:fixed;bottom:3.2vh;right:8vw;z-index:40;font-family:var(--mono);
+    font-size:clamp(12px,1.2vw,15px);color:var(--grey);pointer-events:none;font-variant-numeric:tabular-nums}
+  .bar{position:fixed;top:0;left:0;height:5px;background:var(--red);z-index:50;
+    width:0;transition:width .45s ease}
+  @media (prefers-reduced-motion: reduce){.bar{transition:none}}
+
+  ul.big{list-style:none;font-size:clamp(16px,1.9vw,25px);line-height:1.45}
+  ul.big li{padding:1.3vh 0;border-bottom:1px solid rgba(154,144,149,.28);display:flex;gap:.7em}
+  ul.big li:last-child{border-bottom:none}
+  ul.big .b{color:var(--red);font-weight:900;flex-shrink:0}
+  .paper ul.big li{border-color:rgba(92,84,88,.22)}
+
+  .defs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2vh 2.5vw}
+  .def{border-top:4px solid var(--red);padding-top:1.3vh}
+  .def dt{font-weight:900;font-size:clamp(17px,2vw,26px);text-transform:uppercase;letter-spacing:.01em}
+  .def dd{font-size:clamp(14px,1.55vw,19px);line-height:1.45;color:var(--grey);margin-top:.5vh}
+  .paper .def dd{color:var(--grey-dark)}
+
+  .file{font-family:var(--mono);font-size:.92em;background:rgba(214,0,60,.12);
+    color:var(--red);padding:.1em .45em;border-radius:3px;white-space:nowrap}
+  .paper .file{background:rgba(214,0,60,.09)}
+
+  .huge{font-weight:900;font-size:clamp(60px,11vw,170px);line-height:.95;letter-spacing:-.03em;text-transform:uppercase}
+  .stamp{display:inline-block;font-family:var(--mono);font-weight:700;border:3px solid currentColor;
+    padding:.35em .7em;font-size:clamp(15px,1.8vw,23px);letter-spacing:.12em;margin-top:3vh}
+
+  table{border-collapse:collapse;width:100%;font-size:clamp(13px,1.55vw,19px)}
+  th{text-align:left;font-size:.72em;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--red);padding:0 1.2em .7em 0;font-weight:700}
+  td{padding:.65em 1.2em .65em 0;border-top:1px solid rgba(154,144,149,.28);line-height:1.4;vertical-align:top}
+  .paper td{border-color:rgba(92,84,88,.22)}
+  .tnum{font-family:var(--mono);color:var(--red);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  .rfpcard{background:var(--paper);color:var(--ink);border-left:8px solid var(--red);
+    padding:3.5vh 3vw;font-size:clamp(15px,1.8vw,23px);line-height:1.65;max-width:74ch;
+    box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  .rfpcard .from{font-family:var(--mono);font-size:.65em;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--red);display:block;margin-bottom:1.5vh}
+  .rfpcard .forge{display:block;margin-top:1.5vh;padding-top:1.5vh;border-top:2px dashed rgba(214,0,60,.4);
+    font-weight:700}
+
+  .hint{position:fixed;bottom:3.2vh;left:50%;transform:translateX(-50%);z-index:40;
+    font-size:clamp(11px,1.1vw,13px);letter-spacing:.18em;text-transform:uppercase;
+    color:var(--grey);opacity:.8;pointer-events:none;transition:opacity .6s}
+  .hint.gone{opacity:0}
+  .navzone{position:fixed;top:0;bottom:0;width:14vw;z-index:30;cursor:pointer;background:none;border:none}
+  .navzone:focus-visible{outline:3px solid var(--red);outline-offset:-3px}
+  .navzone.prev{left:0}.navzone.next{right:0}
+
+  /* Print = export: Ctrl+P -> Save as PDF gives one slide per page */
+  @page{size:13.33in 7.5in;margin:0}
+  @media print{
+    html,body{height:auto;overflow:visible}
+    .bar,.brand,.tag,.counter,.hint,.navzone{display:none!important}
+    .deck{height:auto}
+    .slide{position:relative;inset:auto;opacity:1!important;visibility:visible!important;transform:none!important;
+      height:7.5in;width:13.33in;page-break-after:always;overflow:hidden;transition:none}
+  }
+  .code{font-family:var(--mono);font-size:clamp(12px,1.45vw,18px);line-height:1.55;background:var(--ink-soft);color:var(--paper);padding:2.2vh 1.8vw;border-left:6px solid var(--red);white-space:pre;overflow-x:auto;max-width:100%}  .paper .code{background:#241D25}  .code .cm{color:var(--grey)}</style>
+
+<div class="bar" id="bar"></div>
+<div class="brand" id="brand">i.c.stars<span class="pipe">|</span><span class="star">*</span><span class="mke">Milwaukee</span></div>
+<div class="tag">RFP Tech Learning · Week 7</div>
+<div class="counter" id="counter">1 / 18</div>
+<div class="hint" id="hint">→ arrow keys or tap sides</div>
+<button class="navzone prev" id="zPrev" aria-label="Previous slide"></button>
+<button class="navzone next" id="zNext" aria-label="Next slide"></button>
+
+<div class="deck" id="deck">
+
+<!-- 1 · TITLE -->
+<section class="slide ink active">
+  <div class="eyebrow">Monday, October 12 · 10:30–12:00</div>
+  <h1>Wire it<br>up<span class="star">*</span></h1>
+  <p class="sub" style="margin-top:3vh">Your data is loaded and on a screen. Today it gets a
+  <strong style="color:var(--paper)">front door</strong> (an API), a
+  <strong style="color:var(--paper)">reflex</strong> (a trigger), and a
+  <strong style="color:var(--paper)">plan for its AI</strong>. First I'll do it. Then we'll do it
+  together. Then your team wires your own project.</p>
+</section>
+
+<!-- 2 · AGENDA -->
+<section class="slide paper">
+  <div class="eyebrow">The next 90 minutes</div>
+  <h2>Agenda</h2>
+  <ul class="big">
+    <li><span class="b">10:30</span><span>The wiring, and why users never see it</span></li>
+    <li><span class="b">10:45</span><span><strong>I do</strong> — watch me wire my copy, out loud. You just watch.</span></li>
+    <li><span class="b">11:00</span><span><strong>We do</strong> — all together, one step at a time. Nobody gets left.</span></li>
+    <li><span class="b">11:25</span><span><strong>You do</strong> — your project grows an API, a trigger, and an AI plan</span></li>
+    <li><span class="b">11:50</span><span>Stand and report</span></li>
+  </ul>
+</section>
+
+<!-- 3 · STORY -->
+<section class="slide ink">
+  <div class="eyebrow">The story so far</div>
+  <h2>Week 6 built the warehouse.<br>Nobody shops in a warehouse.</h2>
+  <p class="sub">Your screen works — but it talks straight to files on one laptop. Real products
+  put a layer in between, so <em>any</em> screen, a teammate's tool, and the AI helper all ask the
+  same questions at the same door and get the same answers. That layer is this week. Users will
+  never see it — and everything they see will come through it.</p>
+</section>
+
+<!-- 4 · THE PICTURE -->
+<section class="slide ink">
+  <div class="eyebrow">What we're building</div>
+  <h2>The wiring diagram</h2>
+  <div class="code">                     ┌──────────────┐
+  your data  ───────► │   YOUR API   │ ───►  your screen
+  (files / db)        │              │ ───►  a teammate's browser
+                      │  /counts     │ ───►  next week: the AI helper
+     every minute ──► │  /tickets    │
+     a TRIGGER checks │  /alerts     │
+     a rule, alone    └──────────────┘</div>
+  <p class="sub" style="margin-top:2.5vh">Three endpoints, one reflex, one pencil plan for the AI.
+  That's the whole week.</p>
+</section>
+
+<!-- 5 · NEW WORDS -->
+<section class="slide paper">
+  <div class="eyebrow">New words & ideas</div>
+  <h2>Five words, plainly</h2>
+  <table>
+    <tr><th>Word</th><th>What it really means</th></tr>
+    <tr><td><strong>API</strong></td><td>A menu of questions your data answers over the network.</td></tr>
+    <tr><td><strong>Endpoint</strong></td><td>One item on that menu. <span class="file">/tickets?team=NAME</span> is an endpoint with a filter.</td></tr>
+    <tr><td><strong>JSON</strong></td><td>The answer's format — data dressed for machines, readable by humans.</td></tr>
+    <tr><td><strong>Trigger</strong></td><td>Code that runs on a clock or an event, not on a click. It notices things nobody asked about.</td></tr>
+    <tr><td><strong>AI use case</strong></td><td>One sentence: "A user asks the AI ___, and it answers ___ using ___ data."</td></tr>
+  </table>
+</section>
+
+<!-- 6 · METHOD -->
+<section class="slide paper">
+  <div class="eyebrow">Same as week 6 — it worked</div>
+  <h2>I do → We do → You do</h2>
+  <dl class="defs">
+    <div class="def"><dt>I do</dt><dd>I wire my copy while you watch. No typing, no pressure.</dd></div>
+    <div class="def"><dt>We do</dt><dd>Same five steps, together, a checkpoint after each. Nobody moves ahead; nobody gets left.</dd></div>
+    <div class="def"><dt>You do</dt><dd>Your team switches to <strong>your project</strong> and wires <em>it</em> — the lesson on your road's branch walks every step.</dd></div>
+  </dl>
+  <p class="sub" style="margin-top:3vh">Being confused at step one is normal. That's why there are three passes.</p>
+</section>
+
+<!-- 7 · TWO SPACES -->
+<section class="slide redbg">
+  <div class="eyebrow">Still the rule</div>
+  <h2>Two spaces</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span><strong>This repo is the kit</strong> — starters, the lesson, the practice field. Nothing here counts.</span></li>
+    <li><span class="b">2</span><span><strong>Your project is the product</strong> — the starter gets copied in, adapted, and shipped by PR. Only that counts.</span></li>
+    <li><span class="b">3</span><span><strong>Friday, the project is what runs</strong> — pulled fresh, on the projector.</span></li>
+  </ul>
+</section>
+
+<!-- 8 · I DO 1 -->
+<section class="slide ink">
+  <div class="eyebrow">I do · step 1 of 5 — just watch, you'll type at 11:00</div>
+  <h2>I fetch the kit</h2>
+  <div class="code"><span class="cm">Terminal, next to my project. I TYPE:</span>
+git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
+copy week07-api-triggers-ai\code\path-python-api.py my-project\code\
+
+<span class="cm">THE SCREEN SAYS:</span>
+        1 file(s) copied.</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "The kit is a box
+  of parts. My project is the machine they go into. One part today: a ready-made API, written in my road's
+  language — copying it in is the intended first move. Making it mine is the work."</p>
+</section>
+
+<!-- 9 · I DO 2 -->
+<section class="slide ink">
+  <div class="eyebrow">I do · step 2 of 5</div>
+  <h2>I start the API</h2>
+  <div class="code"><span class="cm">From MY PROJECT's folder. I TYPE:</span>
+python code/path-python-api.py
+
+<span class="cm">THE SCREEN SAYS:</span>
+Your API is at  http://localhost:8000  (Ctrl+C stops it)
+ALERT  10:47:12  TCS-ServiceDesk-L1-NA-WE has 52 open incidents</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "Two things just
+  happened. The door opened — and before I asked it anything, it <em>spoke</em>. Nobody clicked. Hold that
+  thought: that's the trigger, and we'll come back to it."</p>
+</section>
+
+<!-- 10 · I DO 3 -->
+<section class="slide ink">
+  <div class="eyebrow">I do · step 3 of 5</div>
+  <h2>I knock on the door</h2>
+  <div class="code"><span class="cm">In the browser, I OPEN:</span>
+http://localhost:8000/counts
+
+<span class="cm">THE SCREEN SAYS:</span>
+{"incident": 23334, "change_request": 1969, "sc_req_item": 17501, ...}</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "That's JSON —
+  data dressed for machines, still readable by us. Same lie-detector counts as week 6, but now <em>anything</em>
+  can ask for them: my screen does (open <span class="file">localhost:8000</span> — same page, new plumbing),
+  a teammate's laptop could, and next week the AI helper will."</p>
+</section>
+
+<!-- 11 · I DO 4 -->
+<section class="slide ink">
+  <div class="eyebrow">I do · step 4 of 5</div>
+  <h2>I filter — then I break it on purpose</h2>
+  <div class="code"><span class="cm">I OPEN:</span>
+http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE
+<span class="cm">THE SCREEN SAYS: 25 tickets, that team only — number, state, description.</span>
+
+<span class="cm">Then, ON PURPOSE, I leave the team off:</span>
+http://localhost:8000/tickets
+<span class="cm">THE SCREEN SAYS:</span>
+{"error": "Say which team: /tickets?team=NAME"}</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "I break it on
+  purpose, every time. A good API explains itself when you ask it badly — and this error message is one
+  your team will rewrite for <em>your</em> users. Errors are part of the product."</p>
+</section>
+
+<!-- 12 · I DO 5 -->
+<section class="slide ink">
+  <div class="eyebrow">I do · step 5 of 5 — back to that ALERT</div>
+  <h2>The reflex, explained</h2>
+  <div class="code"><span class="cm">I OPEN:</span>
+http://localhost:8000/alerts
+
+<span class="cm">THE SCREEN SAYS:</span>
+[{"team": "TCS-ServiceDesk-L1-NA-WE", "open": 52,
+  "rule": "more than 40 open incidents", "at": "10:47:12"}]</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "Once a minute,
+  all by itself, the server re-checks a rule: any team over 40 open incidents. The service desk carries 52,
+  so it fired within seconds. That's a trigger — the client hears about trouble <em>without asking</em>.
+  Your team will replace my rule with one your client actually fears."</p>
+</section>
+
+<!-- 13 · I DO RECAP -->
+<section class="slide paper">
+  <div class="eyebrow">I do · what you just watched</div>
+  <h2>Three ideas. That's the week.</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span><strong>The door</strong> — endpoints are just functions that answer over the network (T7A's functions, grown up)</span></li>
+    <li><span class="b">2</span><span><strong>The reflex</strong> — a trigger checks a rule on a clock, and speaks without being asked</span></li>
+    <li><span class="b">3</span><span><strong>The plan</strong> — the AI use cases, written in pencil; next week's AI classes grade them</span></li>
+  </ul>
+  <p class="sub" style="margin-top:2.5vh"><strong style="color:var(--ink)">At 11:00 you do these exact five
+  steps yourself, with me, on your own road.</strong></p>
+</section>
+
+<!-- 14 · WE DO MARKER -->
+<section class="slide redbg">
+  <div class="eyebrow">11:00 · together</div>
+  <h2>We do — same steps,<br>all of us</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span>One step at a time. <strong>Nobody types ahead.</strong></span></li>
+    <li><span class="b">2</span><span>After each step: <strong>thumbs up</strong> when your screen matches. We wait for every thumb.</span></li>
+    <li><span class="b">3</span><span>Stuck? Say so <strong>immediately</strong> — stuck is a group problem here, never a private one</span></li>
+  </ul>
+</section>
+
+<!-- 15 · WE DO 1 -->
+<section class="slide ink">
+  <div class="eyebrow">We do · step 1 of 5 — fetch the kit</div>
+  <h2>Copy your road's starter in</h2>
+  <div class="code"><span class="cm">Terminal, next to your project. Everyone:</span>
+git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
+
+<span class="cm">Then copy YOUR road's starter into YOUR project's code\ folder:</span>
+<span class="cm">Python road:</span>  copy week07-api-triggers-ai\code\path-python-api.py  YOUR-PROJECT\code\
+<span class="cm">Node road:</span>    copy week07-api-triggers-ai\code\path-node-api.mjs   YOUR-PROJECT\code\
+<span class="cm">SQL road:</span>     copy week07-api-triggers-ai\code\path-sql-api.py     YOUR-PROJECT\code\
+          xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</div>
+  <p class="sub" style="margin-top:2vh"><em>Checkpoint: the file is in your project's
+  <span class="file">code\</span> folder — look in File Explorer. Thumbs up.</em></p>
+</section>
+
+<!-- 16 · WE DO 2 -->
+<section class="slide ink">
+  <div class="eyebrow">We do · step 2 of 5 — open the door</div>
+  <h2>Start your API</h2>
+  <div class="code"><span class="cm">From YOUR PROJECT's folder — your road's line:</span>
+<span class="cm">Python road:</span>  python code/path-python-api.py
+<span class="cm">Node road:</span>    node code/path-node-api.mjs
+<span class="cm">SQL road:</span>     python code/path-sql-api.py
+
+<span class="cm">THE SCREEN SAYS (every road):</span>
+Your API is at  http://localhost:8000  (Ctrl+C stops it)
+ALERT  ...  TCS-ServiceDesk-L1-NA-WE has 52 open incidents</div>
+  <p class="sub" style="margin-top:2vh"><em>Checkpoint: the ALERT line appeared on its own — the room's
+  first trigger, firing on every laptop at once. Thumbs up.</em></p>
+</section>
+
+<!-- 17 · WE DO 3 -->
+<section class="slide ink">
+  <div class="eyebrow">We do · step 3 of 5 — knock</div>
+  <h2>Ask for the counts</h2>
+  <div class="code"><span class="cm">In your browser, YOU OPEN:</span>
+http://localhost:8000/counts          <span class="cm">← Python & Node roads</span>
+http://localhost:8000/q/counts        <span class="cm">← SQL road</span>
+
+<span class="cm">THE SCREEN SAYS (JSON, with the numbers you already trust):</span>
+... "incident": 23334 ...</div>
+  <p class="sub" style="margin-top:2vh"><em>Checkpoint: 23334 is on your screen, inside JSON. Thumbs up.</em>
+  Then open plain <span class="file">http://localhost:8000</span> — your week-6 screen, now fed by the API.</p>
+</section>
+
+<!-- 18 · WE DO 4 -->
+<section class="slide ink">
+  <div class="eyebrow">We do · step 4 of 5 — filter, then break it</div>
+  <h2>Ask a filtered question. Then ask badly.</h2>
+  <div class="code"><span class="cm">YOU OPEN (one line — the team name matters):</span>
+http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE     <span class="cm">← Python & Node</span>
+http://localhost:8000/q/tickets?arg=TCS-ServiceDesk-L1-NA-WE    <span class="cm">← SQL road</span>
+
+<span class="cm">Then leave the team off and read what comes back:</span>
+http://localhost:8000/tickets      <span class="cm">/  /q/tickets</span></div>
+  <p class="sub" style="margin-top:2vh"><em>Checkpoint: first a list of that team's tickets — then an error
+  that tells you exactly how to ask properly. Thumbs up.</em> Breaking it on purpose is a professional habit.</p>
+</section>
+
+<!-- 19 · WE DO 5 -->
+<section class="slide ink">
+  <div class="eyebrow">We do · step 5 of 5 — the reflex</div>
+  <h2>Read what it noticed alone</h2>
+  <div class="code"><span class="cm">YOU OPEN:</span>
+http://localhost:8000/alerts
+
+<span class="cm">THE SCREEN SAYS:</span>
+[{"team": "TCS-ServiceDesk-L1-NA-WE", "open": 52, ...}]</div>
+  <p class="sub" style="margin-top:2vh"><em>Checkpoint: the alert is there, timestamped, and nobody
+  clicked anything to make it.</em> You have personally run an API with a working trigger.
+  The rest of the week is making both <strong>yours</strong>.</p>
+</section>
+
+<!-- 20 · YOU DO MARKER -->
+<section class="slide redbg">
+  <div class="eyebrow">11:25 · your team</div>
+  <h2>You do — your project's turn</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span>Make the trigger <strong>your client's</strong> — what should they hear about without asking?</span></li>
+    <li><span class="b">2</span><span>Turn one of <strong>your own week-6 questions</strong> into an endpoint</span></li>
+    <li><span class="b">3</span><span>Draft the <strong>AI use cases</strong> — in pencil, honestly</span></li>
+  </ul>
+  <p class="sub" style="margin-top:3vh">The next slide is the exact set of commands that starts your work.</p>
+</section>
+
+<!-- 21 · YOU DO SETUP -->
+<section class="slide ink">
+  <div class="eyebrow">You do · getting started — in your PROJECT</div>
+  <h2>Branch first, then the lesson</h2>
+  <div class="code"><span class="cm">1 · Terminal in YOUR TEAM'S PROJECT folder. YOU TYPE:</span>
+git switch main
+git pull
+git switch -c api-work        <span class="cm">← one branch per deliverable, shared by the team</span>
+
+<span class="cm">2 · Open the walkthrough — in THIS lesson repo, on your road's branch:</span>
+git switch path-python        <span class="cm">← or path-node, or path-sql</span>
+<span class="cm">    then click LESSON.md — numbered steps, exact commands, all the way to the PR</span></div>
+  <p class="sub" style="margin-top:2vh">From here the lesson holds your hand. The deck's job is done —
+  the lesson takes over.</p>
+</section>
+
+<!-- 22 · WORK BLOCK -->
+<section class="slide ink">
+  <div class="eyebrow">You do · until 11:50 — each item names its lesson step</div>
+  <h2>The work block</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span>Starter copied in, API running from <strong>your project</strong> <em>(LESSON Steps 1–2)</em></span></li>
+    <li><span class="b">2</span><span>Visit every endpoint — including breaking one on purpose <em>(Step 3)</em></span></li>
+    <li><span class="b">3</span><span>Make the trigger your client's rule, prove it fires <em>(Step 5)</em></span></li>
+    <li><span class="b">4</span><span>Your own week-6 question becomes an endpoint <em>(Step 6)</em></span></li>
+    <li><span class="b">5</span><span>Draft 3–5 AI use cases, each naming the endpoint that feeds it <em>(Step 7)</em></span></li>
+    <li><span class="b">6</span><span>Ship it: branch → PR → teammate review → merge <em>(Step 8)</em></span></li>
+  </ul>
+</section>
+
+<!-- 23 · MILESTONE -->
+<section class="slide paper">
+  <div class="eyebrow">Due Friday, October 16</div>
+  <h2>MILESTONE-1016-api-triggers-ai.md</h2>
+  <p class="sub" style="margin-top:1vh">The deliverable is a sentence about <strong>your project</strong>, not about you:</p>
+  <p class="sub" style="font-size:clamp(16px,2.2vw,26px); font-weight:700; margin-top:0.5vh">“Your project now answers over an API, reacts on its own, and knows what its AI will do.”</p>
+  <table style="margin-top:2vh">
+    <tr><th>Section</th><th>What proves it</th></tr>
+    <tr><td><strong>The endpoints</strong></td><td>At least three, with a pasted sample answer from each</td></tr>
+    <tr><td><strong>The screen</strong></td><td>Screenshot, fed by the API — and how you know it's the API talking</td></tr>
+    <tr><td><strong>The trigger</strong></td><td>Your rule, the alert it raised, and why the client would want it</td></tr>
+    <tr><td><strong>AI use cases</strong></td><td>3–5 in pencil, each naming the endpoint that feeds it</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2vh">Work ships <strong>branch → PR into main → teammate review → merge</strong>.
+  A push straight to main earns the <strong style="color:var(--red)">red X</strong>, not a grade.</p>
+</section>
+
+<!-- 24 · STAND AND REPORT / CLOSE -->
+<section class="slide redbg">
+  <div class="eyebrow">11:50 · two minutes per team</div>
+  <h2>Stand and report</h2>
+  <ul class="big">
+    <li><span class="b">1</span><span>The endpoint you added, in one sentence</span></li>
+    <li><span class="b">2</span><span>What your trigger watches — and why the client would care</span></li>
+    <li><span class="b">3</span><span>Your favorite AI use case so far</span></li>
+    <li><span class="b">4</span><span><strong>Friday:</strong> I pull <strong>your project's main</strong> fresh and run it, on the projector. If it doesn't run from your repo, it doesn't exist yet</span></li>
+  </ul>
+  <p class="sub" style="margin-top:3vh">Next week everything snaps together: screen + API + AI become the
+  prototype, tested and rehearsed for Sprint 2. <strong style="color:var(--paper)">Ask the API.</strong></p>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var bar=document.getElementById('bar'),counter=document.getElementById('counter'),
+      hint=document.getElementById('hint'),brand=document.getElementById('brand'),
+      tag=document.querySelector('.tag');
+  var i=0,n=slides.length,moved=false;
+  function paint(){
+    slides.forEach(function(s,k){s.classList.toggle('active',k===i)});
+    bar.style.width=((i+1)/n*100)+'%';
+    counter.textContent=(i+1)+' / '+n;
+    var dark=!slides[i].classList.contains('paper');
+    var fg=dark?'#FAF6F2':'#161217';
+    brand.style.color=fg; tag.style.color=dark?'#9A9095':'#5C5458';
+    counter.style.color=dark?'#9A9095':'#5C5458';
+    if(!moved&&i>0){moved=true;hint.classList.add('gone')}
+  }
+  function go(d){i=Math.min(n-1,Math.max(0,i+d));paint()}
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')go(1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')go(-1);
+    if(e.key==='Home'){i=0;paint()} if(e.key==='End'){i=n-1;paint()}
+  });
+  document.getElementById('zNext').addEventListener('click',function(){go(1)});
+  document.getElementById('zPrev').addEventListener('click',function(){go(-1)});
+  var x0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>60)go(dx<0?1:-1);
+    x0=null;
+  },{passive:true});
+  paint();
+})();
+</script>
