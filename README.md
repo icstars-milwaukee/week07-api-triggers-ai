@@ -28,14 +28,14 @@ see it — but every screen, alert, and AI answer runs through it.
 
 | Where | What |
 |---|---|
-|  | Python road: the API + trigger starter, ready to copy into your project |
-|  | Node road: same starter in Node |
-|  +  | SQL road: your .sql files ARE the endpoints; the given server runs them |
-|  | The pencil draft your team fills in |
-|  | The deliverable: what your project does by Friday |
-|  | Monday's workshop deck |
+| `code/path-python-api.py` | Python road: the API + trigger starter, ready to copy into your project |
+| `code/path-node-api.mjs` | Node road: same starter in Node |
+| `code/path-sql-api.py` + `code/queries/` | SQL road: your .sql files ARE the endpoints; the given server runs them |
+| `AI-USE-CASES.md` | The pencil draft your team fills in |
+| `MILESTONE-1016-api-triggers-ai.md` | The deliverable: what your project does by Friday |
+| `REF-week7-workshop-deck.html` | Monday's workshop deck |
 
-Pick your road's branch for the step-by-step walkthrough:  ·  · .
+Pick your road's branch for the step-by-step walkthrough: `git switch path-python` · `path-node` · `path-sql`.
 
 ## What You Already Know (from class)
 
