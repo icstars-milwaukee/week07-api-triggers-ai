@@ -2,20 +2,23 @@
 
 > **Two spaces.** This lesson is the practice field - follow it here, break
 > things here. The deliverable lives in **your team's project**: when a step
-> works here, go make your project do it. Friday, the project is what runs.
+> works here, go make your project do it. Both count: your **practice branch**
+> is Deliverable A (shows your team understands), the **milestone on main** is
+> Deliverable B (shows your project does it). Friday, the project is what runs.
 
-## Step 0 — A work branch first
+## Step 0 — The practice branch first
 
-In **your team's project** folder (not this lesson's), make this week's branch —
-one branch per deliverable, shared by whoever works on it:
+In **your team's project** folder, make this week's practice bench:
 
 ```
 git switch main
 git pull
-git switch -c api-work
+git switch -c practice/week7
 ```
 
-(`-c` means create: a new branch that starts as a copy of main.)
+(`-c` means create: a new branch that starts as a copy of main.) Every step
+of this lesson happens on it. This branch IS Deliverable A - push it as you
+go, messy allowed. The polished version ships to `main` in Step 8.
 
 ## Step 1 — Bring the starter into your project
 
@@ -94,12 +97,33 @@ a team - 3 to 5 one-sentence use cases, each naming the endpoint that would
 feed it. It's a draft in pencil: next week's AI classes grade it, and cutting
 a line then is success, not failure.
 
-## Step 8 — Ship it
+## Step 8 — Ship both deliverables
 
-1. Copy `MILESTONE-1016-api-triggers-ai.md` from this lesson into your
-   project and fill it in: endpoints with sample answers, the screen
-   screenshot, the trigger's alert, the use cases.
+**Deliverable A — the practice branch.** You're on it. Push it:
+
+```
+git push -u origin practice/week7
+```
+
+Done. No PR, no review - practice is allowed to be messy. It just has to
+exist, run, and show everyone's commits.
+
+**Deliverable B — your project does it.** Promote the version that deserves
+to ship:
+
+```
+git switch main
+git switch -c api-work
+git checkout practice/week7 -- code/
+```
+
+(That last line reads: "from the practice branch, take the code folder."
+Promotion, not re-typing.)
+
+1. Copy `MILESTONE-1016-api-triggers-ai.md` and `AI-USE-CASES.md` from this
+   lesson into your project and fill them in: endpoints with sample answers,
+   the screen screenshot, the trigger's alert, the use cases.
 2. Push the branch, open a Pull Request into `main`. A teammate who didn't
    write it pulls it, runs it, and checks the boxes.
-3. Merged = your project now answers over an API, reacts on its own, and
-   knows what its AI will do. That's the milestone sentence, made true.
+3. Merged = the milestone sentence is true: your project answers over an
+   API, reacts on its own, and knows what its AI will do.
