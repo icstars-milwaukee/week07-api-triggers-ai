@@ -2,7 +2,11 @@
 
 **Your project now answers over an API, reacts on its own, and knows what its AI will do.**
 
-That sentence is the deliverable. Everything below is how you prove it.
+That sentence is **Deliverable B** - proven below, shipped by PR into main.
+
+**Deliverable A** is your team's `practice/week7` branch: the lesson,
+completed together and pushed. No review, messy allowed - it must exist,
+run, and carry every teammate's commits.
 
 On Friday this repo gets pulled fresh and run live, in front of everyone.
 If it doesn't run from the repo, it doesn't exist yet.
