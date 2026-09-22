@@ -45,6 +45,15 @@ expect to cut at least one.
 2.
 3.
 
+## Test Cases, Run
+
+Your filled-in `TEST-CASES.md`: at least 6 cases, at least 2 edge cases, and
+at least one covering your trigger in **both** directions — fires when it
+should, stays quiet when it shouldn't. This week you are testing the
+**promise** your API makes. Failures either fixed (say what changed) or
+listed as known issues.
+
+
 ## Team
 
 Every teammate appears in the commit history, and this milestone shipped
