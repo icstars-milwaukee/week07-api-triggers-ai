@@ -120,7 +120,7 @@ git checkout practice/week7 -- code/
 (That last line reads: "from the practice branch, take the code folder."
 Promotion, not re-typing.)
 
-1. Copy `MILESTONE-1016-api-triggers-ai.md` and `AI-USE-CASES.md` from this
+1. Copy `DEL-1016-api-triggers-ai.md` and `AI-USE-CASES.md` from this
    lesson into your project and fill them in: endpoints with sample answers,
    the screen screenshot, the trigger's alert, the use cases.
 2. Push the branch, open a Pull Request into `main`. A teammate who didn't
