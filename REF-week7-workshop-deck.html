@@ -305,7 +305,6 @@ git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
 
 <span class="cm">Then copy YOUR road's starter into YOUR project's code\ folder:</span>
 <span class="cm">TypeScript road:</span>  copy week07-api-triggers-ai\code\path-typescript-api.mts  YOUR-PROJECT\code\
-<span class="cm">Node road:</span>    copy week07-api-triggers-ai\code\path-node-api.mjs   YOUR-PROJECT\code\
 <span class="cm">SQL road:</span>     copy week07-api-triggers-ai\code\path-sql-api.mts    YOUR-PROJECT\code\
           xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</div>
   <p class="sub" style="margin-top:2vh"><em>Checkpoint: the file is in your project's
@@ -318,7 +317,6 @@ git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
   <h2>Start your API</h2>
   <div class="code"><span class="cm">From YOUR PROJECT's folder — your road's line:</span>
 <span class="cm">TypeScript road:</span>  node code/path-typescript-api.mts
-<span class="cm">Node road:</span>    node code/path-node-api.mjs
 <span class="cm">SQL road:</span>     node code/path-sql-api.mts
 
 <span class="cm">THE SCREEN SAYS (every road):</span>
@@ -333,7 +331,7 @@ ALERT  ...  TCS-ServiceDesk-L1-NA-WE has 52 open incidents</div>
   <div class="eyebrow">We do · step 3 of 5 — knock</div>
   <h2>Ask for the counts</h2>
   <div class="code"><span class="cm">In your browser, YOU OPEN:</span>
-http://localhost:8000/counts          <span class="cm">← TypeScript & Node roads</span>
+http://localhost:8000/counts          <span class="cm">← TypeScript road</span>
 http://localhost:8000/q/counts        <span class="cm">← SQL road</span>
 
 <span class="cm">THE SCREEN SAYS (JSON, with the numbers you already trust):</span>
@@ -347,7 +345,7 @@ http://localhost:8000/q/counts        <span class="cm">← SQL road</span>
   <div class="eyebrow">We do · step 4 of 5 — filter, then break it</div>
   <h2>Ask a filtered question. Then ask badly.</h2>
   <div class="code"><span class="cm">YOU OPEN (one line — the team name matters):</span>
-http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE     <span class="cm">← TypeScript & Node</span>
+http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE     <span class="cm">← TypeScript road</span>
 http://localhost:8000/q/tickets?arg=TCS-ServiceDesk-L1-NA-WE    <span class="cm">← SQL road</span>
 
 <span class="cm">Then leave the team off and read what comes back:</span>
@@ -392,7 +390,7 @@ git pull
 git switch -c practice/week7  <span class="cm">← the practice bench — this branch IS Deliverable A</span>
 
 <span class="cm">2 · Open the walkthrough — in THIS lesson repo, on your road's branch:</span>
-git switch path-typescript    <span class="cm">← or path-node, or path-sql</span>
+git switch path-typescript    <span class="cm">← or path-sql</span>
 <span class="cm">    then click LESSON.md — numbered steps, exact commands, all the way to the PR</span></div>
   <p class="sub" style="margin-top:2vh">From here the lesson holds your hand. The deck's job is done —
   the lesson takes over.</p>
