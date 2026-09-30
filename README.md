@@ -29,14 +29,13 @@ see it — but every screen, alert, and AI answer runs through it.
 | Where | What |
 |---|---|
 | `code/path-typescript-api.mts` | TypeScript road: the API + trigger starter, ready to copy into your project |
-| `code/path-node-api.mjs` | Node road: same starter in Node |
 | `code/path-sql-api.mts` + `code/queries/` | SQL road: your .sql files ARE the endpoints; the given server runs them |
 | `AI-USE-CASES.md` | The pencil draft your team fills in |
 | `TEST-CASES.md` | Write at least 6 API and trigger checks first, then run them - 2+ edge cases |
 | `DEL-1016-api-triggers-ai.md` | The deliverable: what your project does by Friday |
 | `REF-week7-workshop-deck.html` | Monday's workshop deck |
 
-Pick your road's branch for the step-by-step walkthrough: `git switch path-typescript` · `path-node` · `path-sql`.
+Pick your road's branch for the step-by-step walkthrough: `git switch path-typescript` · `path-sql`.
 
 ## What You Already Know (from class)
 
