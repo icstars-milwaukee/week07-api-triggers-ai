@@ -29,7 +29,7 @@ project's** `code/` folder (drag both in File Explorer, or from your
 project folder):
 
 ```
-copy ..\week07-api-triggers-ai\code\path-sql-api.py code\
+copy ..\week07-api-triggers-ai\code\path-sql-api.mts code\
 xcopy ..\week07-api-triggers-ai\code\queries code\queries\ /E /I
 ```
 
@@ -38,14 +38,14 @@ You will not need to edit the server. Your API is the `.sql` files.
 ## Step 2 — Run it
 
 Your project needs its `servicenow.db` (week 6's import built it - if it's
-missing, re-run `sqlite3 servicenow.db < code/path-sql.sql`). Then:
+missing, re-run `sqlite3 servicenow.db ".read code/path-sql.sql"`). Then:
 
 ```
-python code/path-sql-api.py
+node code/path-sql-api.mts
 ```
 
-(The server is Python, but it ships with Python itself - nothing to
-install, and you never edit it.) The terminal says the API is at
+(SQLite ships inside Node itself - nothing to install, and you never
+edit this file. You need Node 24 or newer.) The terminal says the API is at
 http://localhost:8000 - and within a few seconds it prints an ALERT line
 all by itself. That's `alert-rule.sql` firing; more in Step 5. Open
 **http://localhost:8000** - your dashboard is back, but read the small
