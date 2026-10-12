@@ -112,6 +112,28 @@ body:not([data-road]) .only-sql,
 body:not([data-road]) .only-ts{display:none}
 .road-note{font-size:.88rem;color:var(--grey-dark);margin:10px 0 0}
 
+/* ---------- team picker ---------- */
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.team{font:inherit;font-weight:800;font-size:1.02rem;cursor:pointer;padding:14px 10px;
+  text-align:center;background:#fff;border:2px solid var(--ink);color:var(--ink);
+  text-transform:lowercase;letter-spacing:.02em}
+.team[aria-pressed="true"]{background:var(--red);color:var(--paper);border-color:var(--red)}
+.team:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+/* every team-specific block hides until a team is chosen */
+.teamonly{display:none}
+body[data-team] .teamonly{display:block}
+.yours{background:#fff;border:1px solid var(--paper-dim);border-left:5px solid var(--red);
+  padding:16px 18px;margin-top:12px}
+.yours h3{font-size:1.02rem;margin-bottom:10px}
+.yours a{display:block;font-family:var(--mono);font-size:.92rem;padding:7px 0;
+  border-bottom:1px solid var(--paper-dim);word-break:break-all}
+.yours a:last-of-type{border-bottom:none}
+.yours .lab{display:inline-block;min-width:9.5em;color:var(--grey-dark);font-weight:700;
+  font-family:var(--disp);font-size:.84rem;text-transform:uppercase;letter-spacing:.06em}
+.whoami{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grey-dark)}
+.whoami b{color:var(--red)}
+
 /* ---------- details / progressive disclosure ---------- */
 details{background:#fff;border:1px solid var(--paper-dim);margin-bottom:10px}
 details summary{cursor:pointer;padding:13px 16px;font-weight:700;list-style:none}
@@ -169,7 +191,35 @@ a{color:var(--red-deep)}
 <div class="wrap">
 
   <!-- ============================================================ -->
-  <h2><span class="n">1</span>Pick your road</h2>
+  <h2><span class="n">1</span>Pick your team</h2>
+  <p class="lede">Tap your team once. The page then shows <em>your</em> repos and hides
+  everything that isn't yours. It remembers.</p>
+
+  <div class="teams">
+    <button class="team" data-team="unity"  type="button" aria-pressed="false">unity</button>
+    <button class="team" data-team="teq"    type="button" aria-pressed="false">teq</button>
+    <button class="team" data-team="ibis"   type="button" aria-pressed="false">ibis</button>
+    <button class="team" data-team="flogic" type="button" aria-pressed="false">flogic</button>
+    <button class="team" data-team="ufs"    type="button" aria-pressed="false">ufs</button>
+  </div>
+
+  <div class="teamonly yours">
+    <h3>Your three addresses <span class="whoami">team <b id="teamName">—</b></span></h3>
+    <a id="lnkLesson" href="#" target="_blank" rel="noopener">
+      <span class="lab">The lesson</span><span id="txtLesson"></span></a>
+    <a id="lnkProject" href="#" target="_blank" rel="noopener">
+      <span class="lab">Your product</span><span id="txtProject"></span></a>
+    <a id="lnkPR" href="#" target="_blank" rel="noopener">
+      <span class="lab">Open a PR</span><span id="txtPR"></span></a>
+    <p style="color:var(--grey-dark);font-size:.9rem;margin-top:12px">
+      <strong>The lesson</strong> is where you practice — your <code>practice/week7</code> branch
+      lives here and is <strong>Deliverable A</strong>.
+      <strong>Your product</strong> is the only place that counts on Friday —
+      <strong>Deliverable B</strong> ships there by PR.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2><span class="n">2</span>Pick your road</h2>
   <p class="lede">Do this first. The rest of this page then hides the half that isn't yours.</p>
 
   <div class="roads">
@@ -186,7 +236,7 @@ a{color:var(--red-deep)}
   You can switch any time, and switching changes nothing you've written.</p>
 
   <!-- ============================================================ -->
-  <h2><span class="n">2</span>Do these three things</h2>
+  <h2><span class="n">3</span>Do these three things</h2>
   <p class="lede">In this order. Don't read ahead — the next thing is always on this page.</p>
 
   <div class="card" data-chk>
@@ -207,12 +257,12 @@ git switch -c practice/week7</pre>
       <p>Clone this lesson repo <em>next to</em> your project, then copy one file across.</p>
       <div class="meta">5 minutes</div>
     </span></label>
-<pre>git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai</pre>
+<pre>git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai<span class="teamsuffix"></span></pre>
 <pre class="only-ts"><span class="cm">TypeScript road — one file:</span>
-copy week07-api-triggers-ai\code\path-typescript-api.mts  YOUR-PROJECT\code\</pre>
+copy week07-api-triggers-ai<span class="teamsuffix"></span>\code\path-typescript-api.mts  YOUR-PROJECT\code\</pre>
 <pre class="only-sql"><span class="cm">SQL road — the server AND the queries folder:</span>
-copy week07-api-triggers-ai\code\path-sql-api.mts  YOUR-PROJECT\code\
-xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</pre>
+copy week07-api-triggers-ai<span class="teamsuffix"></span>\code\path-sql-api.mts  YOUR-PROJECT\code\
+xcopy week07-api-triggers-ai<span class="teamsuffix"></span>\code\queries  YOUR-PROJECT\code\queries\ /E /I</pre>
   </div>
 
   <div class="card" data-chk>
@@ -222,10 +272,12 @@ xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</pre
       this page is only the map.</strong></p>
       <div class="meta">then follow it to the end</div>
     </span></label>
-<pre class="only-ts"><span class="cm">in the LESSON repo you just cloned:</span>
+<pre class="only-ts"><span class="cm">inside the folder you just cloned:</span>
+cd week07-api-triggers-ai<span class="teamsuffix"></span>
 git switch path-typescript
 <span class="cm">then open LESSON.md</span></pre>
-<pre class="only-sql"><span class="cm">in the LESSON repo you just cloned:</span>
+<pre class="only-sql"><span class="cm">inside the folder you just cloned:</span>
+cd week07-api-triggers-ai<span class="teamsuffix"></span>
 git switch path-sql
 <span class="cm">then open LESSON.md</span></pre>
   </div>
@@ -234,7 +286,7 @@ git switch path-sql
   come back when you need it. You don't have to read it now.</div>
 
   <!-- ============================================================ -->
-  <h2><span class="n">3</span>What you hand in</h2>
+  <h2><span class="n">4</span>What you hand in</h2>
   <p class="lede">Six boxes. Tick them as you go — this page remembers.</p>
 
   <div class="card" data-chk>
@@ -294,7 +346,7 @@ git switch path-sql
   live, in front of everyone. <strong>If it doesn't run from the repo, it doesn't exist yet.</strong></div>
 
   <!-- ============================================================ -->
-  <h2><span class="n">4</span>Every file, and whether you touch it</h2>
+  <h2><span class="n">5</span>Every file, and whether you touch it</h2>
   <p class="lede">The whole repo. Six of these you can ignore today.</p>
 
   <div class="file">
@@ -414,7 +466,7 @@ git switch path-sql
   </div>
 
   <!-- ============================================================ -->
-  <h2><span class="n">5</span>When you're stuck</h2>
+  <h2><span class="n">6</span>When you're stuck</h2>
   <p class="lede">Open only the one that matches. Don't read them all.</p>
 
   <details>
@@ -554,9 +606,48 @@ git switch path-sql
     if (!confirm('Clear every tick on this page?')) { return; }
     state = {};
     save(KEY, state);
+    try { localStorage.removeItem('ics-wk7-team'); localStorage.removeItem('ics-wk7-road'); } catch (e) {}
+    document.body.removeAttribute('data-team');
+    document.body.removeAttribute('data-road');
+    [].slice.call(document.querySelectorAll('.team,.road')).forEach(function (b) {
+      b.setAttribute('aria-pressed', 'false');
+    });
     boxes.forEach(function (b) { b.checked = false; });
     paint();
   });
+
+  // ---- team picker: one tap, then the page is theirs ----
+  var TKEY = 'ics-wk7-team';
+  var teamBtns = [].slice.call(document.querySelectorAll('.team'));
+
+  function setTeam(team) {
+    document.body.setAttribute('data-team', team);
+    teamBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.team === team ? 'true' : 'false');
+    });
+    var lesson  = 'https://github.com/icstars-milwaukee/week07-api-triggers-ai-' + team;
+    var project = 'https://github.com/icstars-milwaukee/rfp-' + team;
+    document.getElementById('teamName').textContent = team;
+    document.getElementById('lnkLesson').href  = lesson;
+    document.getElementById('txtLesson').textContent  = 'week07-api-triggers-ai-' + team;
+    document.getElementById('lnkProject').href = project;
+    document.getElementById('txtProject').textContent = 'rfp-' + team;
+    document.getElementById('lnkPR').href = project + '/compare/main...practice/week7?expand=1';
+    document.getElementById('txtPR').textContent = 'rfp-' + team + ' → new pull request';
+    [].slice.call(document.querySelectorAll('.teamsuffix')).forEach(function (s) {
+      s.textContent = '-' + team;
+    });
+    save(TKEY, team);
+  }
+
+  teamBtns.forEach(function (b) {
+    b.addEventListener('click', function () { setTeam(b.dataset.team); });
+  });
+
+  var savedTeam = load(TKEY, null);
+  if (savedTeam && teamBtns.some(function (b) { return b.dataset.team === savedTeam; })) {
+    setTeam(savedTeam);
+  }
 
   // ---- road picker ----
   var btnTs  = document.getElementById('road-ts');
