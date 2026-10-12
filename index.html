@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 — Start Here · i.c.stars Milwaukee</title>
+<style>
+/* ============================================================
+   i.c.stars house palette. Built for one job: never make the
+   reader hold anything in their head.
+   ============================================================ */
+:root{
+  --ink:#161217; --ink-soft:#231C24; --paper:#FAF6F2; --paper-dim:#EFE8E2;
+  --red:#D6003C; --red-deep:#A00030; --grey:#9A9095; --grey-dark:#5C5458;
+  --go:#1C6B4A; --go-soft:#E6F2EC;
+  --disp:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --mono:Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--disp);background:var(--paper);color:var(--ink);line-height:1.6;
+  font-size:17px;-webkit-text-size-adjust:100%}
+
+/* generous measure — long lines are the enemy of re-reading */
+.wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- header ---------- */
+header{background:var(--ink);color:var(--paper);border-bottom:5px solid var(--red);
+  padding:28px 20px 24px;margin-bottom:28px}
+header .wrap{padding-bottom:0}
+.brand{font-weight:900;letter-spacing:-.01em;font-size:1rem}
+.brand .pipe{font-weight:400;opacity:.55;margin:0 .12em}
+.brand .star{color:var(--red)}
+h1{font-size:clamp(1.9rem,6vw,2.9rem);font-weight:900;text-transform:uppercase;
+  letter-spacing:-.02em;line-height:1.02;margin:12px 0 10px}
+.mission{color:#D8CFCB;font-size:1.02rem;max-width:56ch}
+.due{display:inline-block;background:var(--red);color:var(--paper);font-weight:900;
+  font-family:var(--mono);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 12px;margin-top:16px}
+
+/* ---------- sticky progress ---------- */
+#track{position:sticky;top:0;z-index:50;background:var(--paper);
+  border-bottom:2px solid var(--paper-dim);padding:10px 20px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#track .label{font-family:var(--mono);font-size:.8rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--grey-dark);white-space:nowrap}
+#track .meter{flex:1;min-width:120px;height:12px;background:var(--paper-dim);overflow:hidden}
+#track .fill{height:100%;width:0;background:var(--red);transition:width .25s ease}
+#track .count{font-family:var(--mono);font-weight:900;font-size:.95rem;color:var(--red);
+  white-space:nowrap}
+#track button{font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;
+  background:none;border:1px solid var(--grey);color:var(--grey-dark);padding:4px 9px}
+#track button:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ---------- section headings ---------- */
+h2{font-size:1.45rem;font-weight:900;text-transform:uppercase;letter-spacing:-.01em;
+  margin:40px 0 4px;padding-top:18px;border-top:4px solid var(--ink)}
+h2 .n{color:var(--red);margin-right:.4em}
+.lede{color:var(--grey-dark);margin-bottom:18px;max-width:58ch}
+
+/* ---------- the one-thing-at-a-time card ---------- */
+.card{background:#fff;border:1px solid var(--paper-dim);border-left:5px solid var(--red);
+  padding:16px 18px;margin-bottom:12px}
+.card.done{border-left-color:var(--go);background:var(--go-soft)}
+.card h3{font-size:1.06rem;margin-bottom:4px;line-height:1.35}
+.card p{color:var(--grey-dark);font-size:.95rem;margin-top:4px}
+.card .meta{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px}
+
+/* checkbox row: the label IS the hit area, big enough to tap */
+.chk{display:flex;gap:13px;align-items:flex-start;cursor:pointer}
+.chk input{appearance:none;flex:0 0 26px;width:26px;height:26px;margin-top:2px;
+  border:2px solid var(--ink);background:#fff;cursor:pointer;position:relative}
+.chk input:checked{background:var(--go);border-color:var(--go)}
+.chk input:checked::after{content:"✓";position:absolute;inset:0;color:#fff;
+  font-weight:900;font-size:19px;line-height:22px;text-align:center}
+.chk input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.chk > span{flex:1}
+.card.done h3{text-decoration:line-through;text-decoration-color:var(--go)}
+
+/* ---------- badges ---------- */
+.badge{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;padding:3px 7px;vertical-align:.1em}
+.b-read {background:#E8EEF5;color:#1B3A5C}
+.b-write{background:#FBE4EA;color:#7A0022}
+.b-run  {background:#E6F2EC;color:#14503A}
+.b-edit {background:#FDF0DC;color:#6B4A12}
+.b-auto {background:var(--paper-dim);color:var(--grey-dark)}
+.b-skip {background:var(--paper-dim);color:var(--grey)}
+
+/* ---------- file rows ---------- */
+.file{border-bottom:1px solid var(--paper-dim);padding:13px 0;display:flex;
+  gap:14px;align-items:flex-start}
+.file:last-child{border-bottom:none}
+.file .ic{flex:0 0 auto;margin-top:2px}
+.file .body{flex:1;min-width:0}
+.file code{font-family:var(--mono);font-size:.9rem;background:var(--paper-dim);
+  padding:1px 5px;word-break:break-all}
+.file .what{color:var(--grey-dark);font-size:.93rem;margin-top:5px}
+
+/* ---------- road picker ---------- */
+.roads{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.road{font:inherit;font-weight:800;cursor:pointer;padding:15px 12px;text-align:left;
+  background:#fff;border:2px solid var(--ink);color:var(--ink);line-height:1.3}
+.road small{display:block;font-weight:400;font-size:.8rem;color:var(--grey-dark);margin-top:3px}
+.road[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.road[aria-pressed="true"] small{color:#C9C0BC}
+.road:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+/* hide the other road's content entirely — fewer decisions on screen */
+body[data-road="ts"]  .only-sql{display:none}
+body[data-road="sql"] .only-ts{display:none}
+body:not([data-road]) .only-sql,
+body:not([data-road]) .only-ts{display:none}
+.road-note{font-size:.88rem;color:var(--grey-dark);margin:10px 0 0}
+
+/* ---------- details / progressive disclosure ---------- */
+details{background:#fff;border:1px solid var(--paper-dim);margin-bottom:10px}
+details summary{cursor:pointer;padding:13px 16px;font-weight:700;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"▸ ";color:var(--red);font-weight:900}
+details[open] summary::before{content:"▾ "}
+details summary:focus-visible{outline:3px solid var(--red);outline-offset:-3px}
+details .inner{padding:0 16px 16px;border-top:1px solid var(--paper-dim);padding-top:13px}
+details .inner p{color:var(--grey-dark);font-size:.95rem;margin-bottom:8px}
+
+/* ---------- commands ---------- */
+pre{font-family:var(--mono);font-size:.88rem;line-height:1.6;background:var(--ink-soft);
+  color:var(--paper);border-left:5px solid var(--red);padding:14px 16px;margin:10px 0;
+  overflow-x:auto;white-space:pre}
+pre .cm{color:var(--grey)}
+
+/* ---------- callouts ---------- */
+.stop{background:#FBE4EA;border-left:5px solid var(--red);padding:15px 18px;margin:16px 0}
+.stop strong{color:var(--red-deep)}
+.ok{background:var(--go-soft);border-left:5px solid var(--go);padding:15px 18px;margin:16px 0}
+
+/* ---------- footer ---------- */
+footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--paper-dim);
+  color:var(--grey);font-size:.88rem}
+footer a{color:var(--red)}
+a{color:var(--red-deep)}
+
+@media (max-width:560px){
+  .roads{grid-template-columns:1fr}
+  body{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">i.c.stars<span class="pipe">|</span><span class="star">*</span> Milwaukee</div>
+    <h1>Week 7<br>Start here</h1>
+    <p class="mission">Give your data a front door (an <strong style="color:var(--paper)">API</strong>),
+    teach it to react (a <strong style="color:var(--paper)">trigger</strong>), and draft its
+    <strong style="color:var(--paper)">AI helper</strong>.</p>
+    <div class="due">Due Friday, Oct 16</div>
+  </div>
+</header>
+
+<div id="track">
+  <span class="label">Your progress</span>
+  <span class="meter"><span class="fill" id="fill"></span></span>
+  <span class="count" id="count">0 / 0</span>
+  <button id="reset" type="button">Clear</button>
+</div>
+
+<div class="wrap">
+
+  <!-- ============================================================ -->
+  <h2><span class="n">1</span>Pick your road</h2>
+  <p class="lede">Do this first. The rest of this page then hides the half that isn't yours.</p>
+
+  <div class="roads">
+    <button class="road" id="road-ts" type="button" aria-pressed="false">
+      TypeScript road
+      <small>You write JavaScript-with-types. One starter file.</small>
+    </button>
+    <button class="road" id="road-sql" type="button" aria-pressed="false">
+      SQL road
+      <small>Your .sql files <em>are</em> the endpoints.</small>
+    </button>
+  </div>
+  <p class="road-note" id="roadNote">Nothing is hidden yet — pick one above.
+  You can switch any time, and switching changes nothing you've written.</p>
+
+  <!-- ============================================================ -->
+  <h2><span class="n">2</span>Do these three things</h2>
+  <p class="lede">In this order. Don't read ahead — the next thing is always on this page.</p>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="s1"><span>
+      <h3>Make your practice branch</h3>
+      <p>In <strong>your team's project folder</strong> — not this lesson repo.</p>
+      <div class="meta">2 minutes · this branch IS Deliverable A</div>
+    </span></label>
+<pre><span class="cm">in YOUR TEAM'S PROJECT folder:</span>
+git switch main
+git pull
+git switch -c practice/week7</pre>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="s2"><span>
+      <h3>Copy your road's starter into your project</h3>
+      <p>Clone this lesson repo <em>next to</em> your project, then copy one file across.</p>
+      <div class="meta">5 minutes</div>
+    </span></label>
+<pre>git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai</pre>
+<pre class="only-ts"><span class="cm">TypeScript road — one file:</span>
+copy week07-api-triggers-ai\code\path-typescript-api.mts  YOUR-PROJECT\code\</pre>
+<pre class="only-sql"><span class="cm">SQL road — the server AND the queries folder:</span>
+copy week07-api-triggers-ai\code\path-sql-api.mts  YOUR-PROJECT\code\
+xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</pre>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="s3"><span>
+      <h3>Open <code>LESSON.md</code> on your road's branch</h3>
+      <p>From here the lesson walks you through every step. <strong>It is the instructions —
+      this page is only the map.</strong></p>
+      <div class="meta">then follow it to the end</div>
+    </span></label>
+<pre class="only-ts"><span class="cm">in the LESSON repo you just cloned:</span>
+git switch path-typescript
+<span class="cm">then open LESSON.md</span></pre>
+<pre class="only-sql"><span class="cm">in the LESSON repo you just cloned:</span>
+git switch path-sql
+<span class="cm">then open LESSON.md</span></pre>
+  </div>
+
+  <div class="ok"><strong>That's the whole setup.</strong> Everything below is reference —
+  come back when you need it. You don't have to read it now.</div>
+
+  <!-- ============================================================ -->
+  <h2><span class="n">3</span>What you hand in</h2>
+  <p class="lede">Six boxes. Tick them as you go — this page remembers.</p>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d1"><span>
+      <h3>Three working endpoints</h3>
+      <p>At minimum: counts, a filtered ticket list, and one question from your DEL-1009 queries.
+      For each: the address, plus a pasted sample of what it answers.</p>
+      <div class="meta">write it in → DEL-1016-api-triggers-ai.md</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d2"><span>
+      <h3>Your week-6 screen, fed by the API</h3>
+      <p>Screenshot it. Then one sentence on how you <em>know</em> it's the API talking.</p>
+      <div class="meta">the trick: stop the server, refresh, see what breaks</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d3"><span>
+      <h3>One working trigger</h3>
+      <p>Paste the alert it raised. One sentence on why your team picked that rule.</p>
+      <div class="meta">ask: what would the client want told without asking?</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d4"><span>
+      <h3>3–5 AI use cases, in pencil</h3>
+      <p>Each one sentence: "A user asks the AI ___, and it answers ___ using ___ data."
+      Each must name the endpoint that feeds it.</p>
+      <div class="meta">write it in → AI-USE-CASES.md · expect to cut one next week</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d5"><span>
+      <h3>Test cases, written first, then run</h3>
+      <p><strong>6 or more</strong> cases · <strong>2 or more</strong> edge cases ·
+      at least one covering your trigger <strong>both ways</strong> (fires when it should,
+      stays quiet when it shouldn't).</p>
+      <div class="meta">write it in → TEST-CASES.md</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="d6"><span>
+      <h3>Shipped the right way</h3>
+      <p>Every teammate in the commit history, and the milestone went
+      <strong>branch → PR → teammate review → merge</strong>.</p>
+      <div class="meta">a push straight to main earns a red X, not a grade</div>
+    </span></label>
+  </div>
+
+  <div class="stop"><strong>Friday, Oct 16:</strong> your project repo gets pulled fresh and run
+  live, in front of everyone. <strong>If it doesn't run from the repo, it doesn't exist yet.</strong></div>
+
+  <!-- ============================================================ -->
+  <h2><span class="n">4</span>Every file, and whether you touch it</h2>
+  <p class="lede">The whole repo. Six of these you can ignore today.</p>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-run">run it</span></span>
+    <div class="body">
+      <code class="only-ts">code/path-typescript-api.mts</code>
+      <code class="only-sql">code/path-sql-api.mts</code>
+      <div class="what only-ts">Your starter: the API and your first trigger, in TypeScript.
+        Copy it into your project, then make it yours. Run it with
+        <code>node code/path-typescript-api.mts</code> (needs Node 24+).</div>
+      <div class="what only-sql">The server that runs your <code>.sql</code> files as endpoints.
+        You mostly don't edit this one — you edit the queries. Run it with
+        <code>node code/path-sql-api.mts</code>.</div>
+    </div>
+  </div>
+
+  <div class="file only-sql">
+    <span class="ic"><span class="badge b-edit">edit these</span></span>
+    <div class="body">
+      <code>code/queries/</code>
+      <div class="what">Four <code>.sql</code> files — <strong>these are your endpoints.</strong>
+        <code>counts.sql</code> (the lie detector) ·
+        <code>open-by-team.sql</code> (week 6's question) ·
+        <code>tickets.sql</code> (the <code>?</code> gets filled from the URL) ·
+        <code>alert-rule.sql</code> (<strong>change this one</strong> — it's your trigger's rule).</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-read">follow it</span></span>
+    <div class="body">
+      <code>LESSON.md</code>
+      <div class="what"><strong>Your actual instructions</strong> — numbered steps, exact commands,
+        all the way to the PR. Only exists on the road branches
+        (<code class="only-ts">path-typescript</code><code class="only-sql">path-sql</code>),
+        not on <code>main</code>.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-write">write in it</span></span>
+    <div class="body">
+      <code>DEL-1016-api-triggers-ai.md</code>
+      <div class="what"><strong>The deliverable.</strong> Has a numbered blank for every box in
+        section 3 above. Fill it in as you go, not on Thursday night.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-write">write in it</span></span>
+    <div class="body">
+      <code>AI-USE-CASES.md</code>
+      <div class="what">The pencil draft. Shows you the sentence shape and the honesty rule:
+        no endpoint, no use case.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-write">write in it</span></span>
+    <div class="body">
+      <code>TEST-CASES.md</code>
+      <div class="what">A table to fill in, plus two examples to copy the shape from and a list of
+        edge-case ideas if you're stuck. Your QA lead owns it; everyone contributes.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-read">read once</span></span>
+    <div class="body">
+      <code>README.md</code>
+      <div class="what">The week in full: the story, the new words, what your AI coworker should
+        and shouldn't do. Read it once Monday.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-read">optional</span></span>
+    <div class="body">
+      <code>REF-week7-workshop-deck.html</code>
+      <div class="what">Monday's deck. Open it in a browser and arrow through it if you missed
+        something — including what TypeScript actually is.</div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-auto">automatic</span></span>
+    <div class="body">
+      <code>.github/</code>
+      <div class="what">Two things that run on their own. The PR template fills your pull request
+        with a checklist. The <code>main-guard</code> workflow puts a red X on any commit that
+        reaches <code>main</code> without a PR. <strong>Nothing to do here.</strong></div>
+    </div>
+  </div>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-skip">ignore</span></span>
+    <div class="body">
+      <code>.gitignore</code>
+      <div class="what">Keeps databases and <code>node_modules/</code> out of Git. Never needs editing.</div>
+    </div>
+  </div>
+
+  <div class="file only-ts">
+    <span class="ic"><span class="badge b-skip">not your road</span></span>
+    <div class="body">
+      <code>code/path-sql-api.mts</code> · <code>code/queries/</code>
+      <div class="what">The SQL road's kit. Leave it alone — unless you switch roads, which is allowed.</div>
+    </div>
+  </div>
+
+  <div class="file only-sql">
+    <span class="ic"><span class="badge b-skip">not your road</span></span>
+    <div class="body">
+      <code>code/path-typescript-api.mts</code>
+      <div class="what">The TypeScript road's kit. Leave it alone — unless you switch roads, which is allowed.</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2><span class="n">5</span>When you're stuck</h2>
+  <p class="lede">Open only the one that matches. Don't read them all.</p>
+
+  <details>
+    <summary>I don't know what to do next</summary>
+    <div class="inner">
+      <p>Scroll up to section 2. The first unchecked box is your next thing.</p>
+      <p>If all three are checked, your next thing is in <code>LESSON.md</code> on your
+      road's branch — find the lowest-numbered step you haven't finished.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>My API won't start</summary>
+    <div class="inner">
+      <p>Three usual causes, in order:</p>
+      <p><strong>1.</strong> You're in the wrong folder. The command runs from
+      <em>your project's</em> folder, where <code>data/</code> and <code>node_modules/</code> live
+      — not from the lesson repo.</p>
+      <p><strong>2.</strong> Dependencies missing. Run <code>npm.cmd install</code> first —
+      <strong>the <code>.cmd</code> matters</strong> on Windows.</p>
+      <p><strong>3.</strong> Node too old. The starter needs <strong>Node 24 or newer</strong>.
+      Check with <code>node --version</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>It says a port is already in use</summary>
+    <div class="inner">
+      <p>You already have a server running from an earlier attempt. Find that terminal and press
+      <strong>Ctrl+C</strong>, then start it again. One API at a time on port 8000.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>An endpoint returns an error instead of data</summary>
+    <div class="inner">
+      <p>Good — read it. These starters explain themselves when you ask badly:
+      <code>/tickets</code> with no team comes back with
+      <code>{"error": "Say which team: /tickets?team=NAME"}</code>.</p>
+      <p>That's not a crash, it's the API telling you how to ask.
+      <strong>Breaking it on purpose is part of the job</strong> — and rewriting that message for
+      your own users is part of the deliverable.</p>
+    </div>
+  </details>
+
+  <details class="only-ts">
+    <summary>What is TypeScript, actually?</summary>
+    <div class="inner">
+      <p><strong>JavaScript, with the types written down.</strong> It is not a new language —
+      delete every <code>: something</code> and you have JavaScript back.</p>
+      <p>The notes are for a checker that reads your code <em>before</em> it runs, so a misspelled
+      field is caught in your editor instead of by the client.</p>
+      <p>The seven things you'll meet in the starter: <code>: string</code> ("is a") ·
+      <code>type</code> ("name a shape") · <code>Row[]</code> ("a list of") ·
+      <code>Record&lt;string, number&gt;</code> ("keys I don't know yet") ·
+      <code>?</code> and <code>??</code> ("might be missing" / "use this instead") ·
+      <code>as Row[]</code> ("trust me") · and <code>type</code> inside an <code>import</code>.</p>
+      <p>Slides 6–11 of the workshop deck walk through all of it, with two live playgrounds.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>I got a red X on my commit</summary>
+    <div class="inner">
+      <p>You pushed straight to <code>main</code>. Nothing is broken — it's a reminder.</p>
+      <p>Sprint 2 works <strong>branch → PR → teammate review → merge</strong>. Put the work on a
+      branch, open a pull request, have a teammate pull it and run it.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>I'm stuck on the actual code</summary>
+    <div class="inner">
+      <p>Say <strong>STUCK</strong> out loud, or in chat. Stuck is a group problem here, never a
+      private one. Nobody is scored on suffering quietly.</p>
+      <p>Using AI? Give it the error text and the <em>shape</em> of your code.
+      <strong>Never real ticket data</strong> — column names and fake IDs like
+      <code>INC0000001</code> only.</p>
+    </div>
+  </details>
+
+  <footer>
+    <strong>This page is a map, not the instructions.</strong>
+    The instructions are <code>LESSON.md</code> on your road's branch.<br><br>
+    Repo: <a href="https://github.com/icstars-milwaukee/week07-api-triggers-ai">icstars-milwaukee/week07-api-triggers-ai</a>
+    · Your progress is saved in this browser only — nobody else sees it.
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   Two jobs, both about reducing load:
+     1. remember every checkbox, so re-opening the page shows
+        where you actually are
+     2. show one road at a time, so half the page disappears
+   ============================================================ */
+(function () {
+  var KEY  = 'ics-wk7-progress';
+  var RKEY = 'ics-wk7-road';
+
+  var boxes = [].slice.call(document.querySelectorAll('input[type=checkbox][data-id]'));
+  var fill  = document.getElementById('fill');
+  var count = document.getElementById('count');
+
+  function load(k, fallback) {
+    try { return JSON.parse(localStorage.getItem(k)) || fallback; }
+    catch (e) { return fallback; }
+  }
+  function save(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+  }
+
+  var state = load(KEY, {});
+
+  function paint() {
+    var done = 0;
+    boxes.forEach(function (b) {
+      if (b.checked) { done++; }
+      var card = b.closest('[data-chk]');
+      if (card) { card.classList.toggle('done', b.checked); }
+    });
+    count.textContent = done + ' / ' + boxes.length;
+    fill.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + '%';
+  }
+
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.dataset.id];
+    b.addEventListener('change', function () {
+      state[b.dataset.id] = b.checked;
+      save(KEY, state);
+      paint();
+    });
+  });
+  paint();
+
+  document.getElementById('reset').addEventListener('click', function () {
+    if (!confirm('Clear every tick on this page?')) { return; }
+    state = {};
+    save(KEY, state);
+    boxes.forEach(function (b) { b.checked = false; });
+    paint();
+  });
+
+  // ---- road picker ----
+  var btnTs  = document.getElementById('road-ts');
+  var btnSql = document.getElementById('road-sql');
+  var note   = document.getElementById('roadNote');
+
+  function setRoad(road) {
+    document.body.setAttribute('data-road', road);
+    btnTs.setAttribute('aria-pressed',  road === 'ts'  ? 'true' : 'false');
+    btnSql.setAttribute('aria-pressed', road === 'sql' ? 'true' : 'false');
+    note.textContent = road === 'ts'
+      ? 'Showing the TypeScript road. The SQL half of this page is hidden.'
+      : 'Showing the SQL road. The TypeScript half of this page is hidden.';
+    save(RKEY, road);
+  }
+
+  btnTs.addEventListener('click',  function () { setRoad('ts'); });
+  btnSql.addEventListener('click', function () { setRoad('sql'); });
+
+  var saved = load(RKEY, null);
+  if (saved === 'ts' || saved === 'sql') { setRoad(saved); }
+})();
+</script>
+
+</body>
+</html>

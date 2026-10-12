@@ -2,6 +2,11 @@
 
 **Mission: give your data a front door, teach it to react, and draft its AI helper.**
 
+> ### 🧭 New here, or not sure what to do next?
+> **Open the guide: https://icstars-milwaukee.github.io/week07-api-triggers-ai/**
+> One page: pick your road, three things to do right now, the six boxes you hand in,
+> and every file in this repo labelled with whether you touch it. Your ticks are saved.
+
 ## The Story So Far
 
 Week 6 ended with data loaded and a first screen showing it. But that screen talks
