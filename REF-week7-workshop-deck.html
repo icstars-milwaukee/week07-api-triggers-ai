@@ -97,11 +97,30 @@
       height:7.5in;width:13.33in;page-break-after:always;overflow:hidden;transition:none}
   }
   .code{font-family:var(--mono);font-size:clamp(12px,1.45vw,18px);line-height:1.55;background:var(--ink-soft);color:var(--paper);padding:2.2vh 1.8vw;border-left:6px solid var(--red);white-space:pre;overflow-x:auto;max-width:100%}  .paper .code{background:#241D25}  .code .cm{color:var(--grey)}</style>
+<!-- ============================================================
+     Additive only. The house template block above is untouched.
+     .hl  = highlight ONLY the part of a snippet that is new
+     .live = the little tag next to a live-demo heading
+     .cs  = CodeSandbox embed frame
+     ============================================================ -->
+<style>
+  .code .hl{color:var(--red);font-weight:700;background:rgba(214,0,60,.14);
+    padding:.05em .25em;border-radius:2px}
+  .live{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.52em;
+    letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--paper);
+    padding:.3em .7em;vertical-align:.4em;margin-left:.7em}
+  .cs{border-left:6px solid var(--red);background:var(--ink-soft);line-height:0}
+  .cs iframe{width:100%;height:54vh;border:0;display:block}
+  .cs-say{font-family:var(--mono);font-size:clamp(12px,1.3vw,16px);line-height:1.5;
+    color:var(--grey);margin-top:1.8vh;max-width:none}
+  @media print{.cs iframe{height:3.6in}}
+</style>
+
 
 <div class="bar" id="bar"></div>
 <div class="brand" id="brand">i.c.stars<span class="pipe">|</span><span class="star">*</span><span class="mke">Milwaukee</span></div>
 <div class="tag">RFP Tech Learning · Week 7</div>
-<div class="counter" id="counter">1 / 18</div>
+<div class="counter" id="counter">1 / 30</div>
 <div class="hint" id="hint">→ arrow keys or tap sides</div>
 <button class="navzone prev" id="zPrev" aria-label="Previous slide"></button>
 <button class="navzone next" id="zNext" aria-label="Next slide"></button>
@@ -124,7 +143,7 @@
   <div class="eyebrow">The next 90 minutes</div>
   <h2>Agenda</h2>
   <ul class="big">
-    <li><span class="b">10:30</span><span>The wiring, and why users never see it</span></li>
+    <li><span class="b">10:30</span><span>The wiring, why users never see it — and <strong>what TypeScript is</strong></span></li>
     <li><span class="b">10:45</span><span><strong>I do</strong> — watch me wire my copy, out loud. You just watch.</span></li>
     <li><span class="b">11:00</span><span><strong>We do</strong> — all together, one step at a time. Nobody gets left.</span></li>
     <li><span class="b">11:25</span><span><strong>You do</strong> — your project grows an API, a trigger, and an AI plan</span></li>
@@ -170,6 +189,125 @@
     <tr><td><strong>AI use case</strong></td><td>One sentence: "A user asks the AI ___, and it answers ___ using ___ data."</td></tr>
   </table>
 </section>
+
+<!-- 5a · WHAT IS TYPESCRIPT -->
+<section class="slide redbg">
+  <div class="eyebrow">Before you run the starter · the file is called .mts — here's why</div>
+  <h2>What is<br>TypeScript?</h2>
+  <p class="sub" style="margin-top:1vh;font-size:clamp(18px,2.4vw,30px)">
+  <strong style="color:var(--paper)">JavaScript, with the types written down.</strong></p>
+  <p class="sub" style="margin-top:2.5vh">That's the whole answer. It is not a new language — it is
+  the JavaScript you already write, plus notes about what each thing is allowed to be.
+  Delete the notes and you have JavaScript back.
+  <strong style="color:var(--paper)">The notes are for a checker that reads your code before it runs.</strong></p>
+  <p class="stamp">.mts  =  m odule + t ype s cript</p>
+</section>
+
+<!-- 5b · JS VS TS -->
+<section class="slide ink">
+  <div class="eyebrow">Same code, twice · only the highlighted parts are new</div>
+  <h2>The types written down</h2>
+  <div class="code"><span class="cm">JAVASCRIPT — you already write this:</span>
+let team = "TCS-ServiceDesk-L1-NA-WE";
+let open = 52;
+
+function isBusy(count) {
+  return count &gt; 40;
+}
+
+<span class="cm">TYPESCRIPT — the identical code, plus the notes:</span>
+let team<span class="hl">: string</span> = "TCS-ServiceDesk-L1-NA-WE";
+let open<span class="hl">: number</span> = 52;
+
+function isBusy(count<span class="hl">: number</span>)<span class="hl">: boolean</span> {
+  return count &gt; 40;
+}
+
+<span class="cm">Now this mistake is caught BEFORE the server starts:</span>
+isBusy(<span class="hl">"fifty-two"</span>);
+<span class="cm">       ^ Argument of type 'string' is not assignable to parameter of type 'number'.</span></div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong>
+  "Four small notes. That's the entire difference on this slide. And the payoff is the last line —
+  a bug the client never sees, because the code wouldn't even start."</p>
+</section>
+
+<!-- 5c · KEYWORDS -->
+<section class="slide paper">
+  <div class="eyebrow">Write these down · you will see every one of them tonight</div>
+  <h2>Keywords to watch</h2>
+  <table>
+    <tr><th style="width:27%">You'll see</th><th>Read it out loud as</th></tr>
+    <tr><td><span class="file">: string</span> <span class="file">: number</span></td><td><strong>"is a"</strong> — an <em>annotation</em>. The note itself.</td></tr>
+    <tr><td><span class="file">type</span></td><td><strong>"let me name a shape"</strong> — so you write it once and reuse it everywhere.</td></tr>
+    <tr><td><span class="file">Row[]</span></td><td><strong>"a list of Rows"</strong> — the <span class="file">[]</span> means many.</td></tr>
+    <tr><td><span class="file">Record&lt;string, number&gt;</span></td><td><strong>"an object whose keys I don't know yet, whose values are numbers"</strong></td></tr>
+    <tr><td><span class="file">?</span> and <span class="file">??</span></td><td><strong>"might be missing"</strong> · <strong>"use this instead if it is"</strong></td></tr>
+    <tr><td><span class="file">as Row[]</span></td><td><strong>"trust me, it's this"</strong> — you overriding the checker. Use rarely.</td></tr>
+    <tr><td><span class="file">type ServerResponse</span></td><td><strong>"import only the shape, not real code"</strong> — note the word <span class="file">type</span> inside the import.</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2vh">Seven things. <strong style="color:var(--ink)">Every one of them appears in
+  the starter you're about to run</strong> — so when you see it, you'll know what it is instead of scrolling past it.</p>
+</section>
+
+<!-- 5d · THE STARTER'S OWN SHAPES -->
+<section class="slide ink">
+  <div class="eyebrow">Open your starter · these are lines 24-27, unedited</div>
+  <h2>The shapes your<br>API trades in</h2>
+  <div class="code"><span class="cm">From code/path-typescript-api.mts — the real file:</span>
+<span class="hl">type</span> Row       = <span class="hl">Record&lt;string, string&gt;</span>;
+<span class="hl">type</span> TeamCount = { team<span class="hl">: string</span>; open<span class="hl">: number</span> };
+<span class="hl">type</span> Alert     = { team<span class="hl">: string</span>; open<span class="hl">: number</span>; rule<span class="hl">: string</span>; at<span class="hl">: string</span> };
+
+<span class="cm">And then every route PROMISES to return one of those shapes:</span>
+function qOpenByTeam()<span class="hl">: TeamCount[]</span> {
+  ...
+}
+
+function qTickets(team<span class="hl">: string</span>) {
+  ...
+}</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong>
+  "Read the comment the starter already has above those lines: <em>'write them down once and the
+  checker keeps every route honest — misspell a field and the code won't even start.'</em>
+  That is why your API can be trusted by a screen, a teammate, and next week's AI at the same time."</p>
+</section>
+
+<!-- 5e · CODESANDBOX LIVE 1 -->
+<section class="slide ink">
+  <div class="eyebrow">Live · nothing to install — this is running in the slide</div>
+  <h2>Try it<span class="live">codesandbox</span></h2>
+  <div class="cs">
+    <iframe
+      src="https://codesandbox.io/embed/qcmvgv?fontsize=14&amp;hidenavigation=1&amp;theme=dark&amp;view=split&amp;module=%2Findex.ts"
+      title="TypeScript — what it is"
+      allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+      loading="lazy"></iframe>
+  </div>
+  <p class="cs-say">Scroll to the bottom of <span class="file">index.ts</span> and
+  <strong style="color:var(--paper)">uncomment the last line.</strong> The red underline appears
+  while you type — no saving, no running, no waiting.</p>
+</section>
+
+<!-- 5f · CODESANDBOX LIVE 2 -->
+<section class="slide ink">
+  <div class="eyebrow">Live · your starter's actual shapes — break them on purpose</div>
+  <h2>Break it<span class="live">codesandbox</span></h2>
+  <div class="cs">
+    <iframe
+      src="https://codesandbox.io/embed/r6g56x?fontsize=14&amp;hidenavigation=1&amp;theme=dark&amp;view=editor&amp;module=%2Findex.ts"
+      title="TypeScript — the week 7 shapes"
+      allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+      loading="lazy"></iframe>
+  </div>
+  <p class="cs-say">Three commented-out mistakes at the bottom. Uncomment them one at a time:
+  <strong style="color:var(--paper)">a misspelled field</strong> ·
+  <strong style="color:var(--paper)">the wrong type</strong> ·
+  <strong style="color:var(--paper)">a missing field</strong>. All three are the bugs that would
+  otherwise reach your client.</p>
+</section>
+
 
 <!-- 6 · METHOD -->
 <section class="slide paper">
