@@ -120,7 +120,7 @@
 <div class="bar" id="bar"></div>
 <div class="brand" id="brand">i.c.stars<span class="pipe">|</span><span class="star">*</span><span class="mke">Milwaukee</span></div>
 <div class="tag">RFP Tech Learning · Week 7</div>
-<div class="counter" id="counter">1 / 30</div>
+<div class="counter" id="counter">1 / 36</div>
 <div class="hint" id="hint">→ arrow keys or tap sides</div>
 <button class="navzone prev" id="zPrev" aria-label="Previous slide"></button>
 <button class="navzone next" id="zNext" aria-label="Next slide"></button>
@@ -130,12 +130,13 @@
 <!-- 1 · TITLE -->
 <section class="slide ink active">
   <div class="eyebrow">Monday, October 12 · 10:30–12:00</div>
-  <h1>Wire it<br>up<span class="star">*</span></h1>
-  <p class="sub" style="margin-top:3vh">Your data is loaded and on a screen. Today it gets a
-  <strong style="color:var(--paper)">front door</strong> (an API), a
-  <strong style="color:var(--paper)">reflex</strong> (a trigger), and a
-  <strong style="color:var(--paper)">plan for its AI</strong>. First I'll do it. Then we'll do it
-  together. Then your team wires your own project.</p>
+  <h1>Make it<br>readable<span class="star">*</span></h1>
+  <p class="sub" style="margin-top:3vh">Your data is loaded and on a screen only you can read.
+  Today that screen becomes something a <strong style="color:var(--paper)">project manager</strong>
+  can read in ten seconds, and you decide
+  <strong style="color:var(--paper)">what your AI helper will do</strong> — and what it will
+  refuse. Underneath both sits the <strong style="color:var(--paper)">API</strong> that feeds them.
+  First I'll do it. Then we'll do it together. Then your team does your own project.</p>
 </section>
 
 <!-- 2 · AGENDA -->
@@ -143,10 +144,11 @@
   <div class="eyebrow">The next 90 minutes</div>
   <h2>Agenda</h2>
   <ul class="big">
-    <li><span class="b">10:30</span><span>The wiring, why users never see it — and <strong>what TypeScript is</strong></span></li>
-    <li><span class="b">10:45</span><span><strong>I do</strong> — watch me wire my copy, out loud. You just watch.</span></li>
+    <li><span class="b">10:30</span><span><strong>The screen</strong> — three decisions that make numbers readable, and <strong>what TypeScript is</strong></span></li>
+    <li><span class="b">10:45</span><span><strong>I do</strong> — watch me feed my screen from an API, out loud. You just watch.</span></li>
     <li><span class="b">11:00</span><span><strong>We do</strong> — all together, one step at a time. Nobody gets left.</span></li>
-    <li><span class="b">11:25</span><span><strong>You do</strong> — your project grows an API, a trigger, and an AI plan</span></li>
+    <li><span class="b">11:20</span><span><strong>The AI helper</strong> — what it answers, and what it refuses</span></li>
+    <li><span class="b">11:30</span><span><strong>You do</strong> — your project grows a readable screen and an AI spec</span></li>
     <li><span class="b">11:50</span><span>Stand and report</span></li>
   </ul>
 </section>
@@ -155,42 +157,109 @@
 <section class="slide ink">
   <div class="eyebrow">The story so far</div>
   <h2>Week 6 built the warehouse.<br>Nobody shops in a warehouse.</h2>
-  <p class="sub">Your screen works — but it talks straight to files on one laptop. Real products
-  put a layer in between, so <em>any</em> screen, a teammate's tool, and the AI helper all ask the
-  same questions at the same door and get the same answers. That layer is this week. Users will
-  never see it — and everything they see will come through it.</p>
+  <p class="sub">Your screen works — for you. It is a wall of numbers reading off files on one
+  laptop. The RFP does not ask for a wall of numbers: it asks for something a project manager can
+  read <em>without training</em>, and can ask questions of in plain words. So this week you build
+  the shop front — and the counter it is served from.</p>
 </section>
 
 <!-- 4 · THE PICTURE -->
 <section class="slide ink">
   <div class="eyebrow">What we're building</div>
-  <h2>The wiring diagram</h2>
-  <div class="code">                     ┌──────────────┐
-  your data  ───────► │   YOUR API   │ ───►  your screen
-  (files / db)        │              │ ───►  a teammate's browser
-                      │  /counts     │ ───►  next week: the AI helper
-     every minute ──► │  /tickets    │
-     a TRIGGER checks │  /alerts     │
-     a rule, alone    └──────────────┘</div>
-  <p class="sub" style="margin-top:2.5vh">Three endpoints, one reflex, one pencil plan for the AI.
-  That's the whole week.</p>
+  <h2>What the client sees,<br>and what holds it up</h2>
+  <div class="code">        WHAT THEY SEE          ┌─ tiles: one number each
+  ┌──────────────────────┐ ────┼─ one bar chart, one colour
+  │     YOUR SCREEN      │     └─ a table view, for everyone else
+  └──────────┬───────────┘
+             │  fetch()
+  ┌──────────┴───────────┐
+  │       YOUR API       │   /counts   /open-by-team   /tickets
+  └──────────┬───────────┘
+             │
+      your data (files / db)      AI SPEC: what it answers,
+                                  what it refuses — on paper</div>
+  <p class="sub" style="margin-top:2.5vh">A readable screen, an AI spec in pencil, three endpoints
+  underneath. That's the week. The trigger is stretch.</p>
 </section>
 
 <!-- 5 · NEW WORDS -->
 <section class="slide paper">
   <div class="eyebrow">New words & ideas</div>
-  <h2>Five words, plainly</h2>
+  <h2>Six words, plainly</h2>
   <table>
     <tr><th>Word</th><th>What it really means</th></tr>
-    <tr><td><strong>API</strong></td><td>A menu of questions your data answers over the network.</td></tr>
-    <tr><td><strong>Endpoint</strong></td><td>One item on that menu. <span class="file">/tickets?team=NAME</span> is an endpoint with a filter.</td></tr>
-    <tr><td><strong>JSON</strong></td><td>The answer's format — data dressed for machines, readable by humans.</td></tr>
-    <tr><td><strong>Trigger</strong></td><td>Code that runs on a clock or an event, not on a click. It notices things nobody asked about.</td></tr>
+    <tr><td><strong>Form</strong></td><td>The shape you draw data in. One number is a tile. A comparison is bars. The question picks it — not your taste.</td></tr>
+    <tr><td><strong>Series</strong></td><td>One set of related numbers. One series gets one colour.</td></tr>
+    <tr><td><strong>Table view</strong></td><td>The same numbers as plain text. The chart enhances; the table guarantees.</td></tr>
+    <tr><td><strong>API</strong></td><td>A menu of questions your data answers over the network. One item on it — <span class="file">/tickets?team=NAME</span> — is an <strong>endpoint</strong>.</td></tr>
     <tr><td><strong>AI use case</strong></td><td>One sentence: "A user asks the AI ___, and it answers ___ using ___ data."</td></tr>
+    <tr><td><strong>Refusal</strong></td><td>What your AI says when it doesn't know. An AI with no refusals is a liar with good manners.</td></tr>
   </table>
 </section>
 
 <!-- 5a · WHAT IS TYPESCRIPT -->
+<section class="slide ink">
+  <div class="eyebrow">The screen · decision 1 of 3</div>
+  <h2>The question picks<br>the picture</h2>
+  <table>
+    <tr><th>The question a user asks</th><th>What it is</th><th>So you draw</th></tr>
+    <tr><td>"How many incidents are there?"</td><td>one number</td><td>a <strong>tile</strong> — not a one-bar chart</td></tr>
+    <tr><td>"Which team has the most open?"</td><td>a comparison</td><td><strong>bars</strong>, sideways (team names are long)</td></tr>
+    <tr><td>"What happened over the month?"</td><td>a trend</td><td>a <strong>line</strong></td></tr>
+    <tr><td>"Show me every ticket"</td><td>400 rows</td><td>a <strong>table</strong>. No chart. That's fine.</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2.5vh">Not your taste. Not what looks impressive.
+  <strong style="color:var(--paper)">The question.</strong> That is T7B — from stories to design —
+  pointed at a screen.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">The screen · decision 2 of 3</div>
+  <h2>One series, one colour</h2>
+  <p class="sub">Every bar on your chart is the same blue. The temptation is to shade the big ones
+  darker — resist it.</p>
+  <ul class="big">
+    <li><span class="b">1</span><span>The bar's <strong>length</strong> already says who is biggest. Colouring by size says it a second time.</span></li>
+    <li><span class="b">2</span><span>You just spent your only spare channel. Next week you need colour to mean <em>"this one is filtered"</em> — and it is gone.</span></li>
+    <li><span class="b">3</span><span>Colour means <strong>which thing is this</strong>. Length means <strong>how big is it</strong>. Keep those jobs apart and nobody misreads your screen.</span></li>
+  </ul>
+  <p class="sub" style="margin-top:2vh">Same rule, said shorter: <strong style="color:var(--ink)">if the
+  chart already shows it, colour shouldn't repeat it.</strong></p>
+</section>
+
+<section class="slide ink">
+  <div class="eyebrow">The screen · decision 3 of 3</div>
+  <h2>Who does your chart<br>leave behind?</h2>
+  <p class="sub">About one man in twelve cannot reliably tell your colours apart. Somebody is on a
+  phone in the sun. Somebody uses a screen reader. Somebody just wants to copy the number into an
+  email.</p>
+  <p class="sub" style="margin-top:2vh">All four of them need the same thing: <strong style="color:var(--paper)">the
+  table view</strong> — your numbers as plain text, full team names, nothing shortened.</p>
+  <div class="code">  the chart  ──►  enhances      (fast, pretty, approximate)
+  the table  ──►  guarantees    (exact, copyable, readable by anything)</div>
+  <p class="sub" style="margin-top:2.5vh">Which is why <strong style="color:var(--paper)">a number that
+  exists only in a tooltip does not exist.</strong> Hover is a bonus, never the only way in.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">Try it · nothing running, no data</div>
+  <h2>Open the screen<br>with no server at all</h2>
+  <p class="sub">Find <span class="file">code/frontend/index.html</span> and double-click it. No
+  terminal, no API, no client data. It draws from a made-up sample built into the file, and the
+  banner at the top says so.</p>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--ink)">Now break it on purpose.</strong>
+  Change one thing, refresh, see what it teaches:</p>
+  <table style="margin-top:1vh">
+    <tr><th>Change this</th><th>And learn</th></tr>
+    <tr><td><span class="file">BAR_H</span> from 20 to 60</td><td>why bars are capped — thick blocks read loud and childish</td></tr>
+    <tr><td><span class="file">--series-1</span> to a pale yellow</td><td>why a colour has to earn its contrast against the surface</td></tr>
+    <tr><td><span class="file">short(r.team)</span> to <span class="file">r.team</span></td><td>what a label does when nobody measured it first</td></tr>
+    <tr><td>delete the <span class="file">.val</span> text line</td><td>how much the axis alone can carry — and where it stops</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2vh">This is the safest file in the repo to wreck. It has no real
+  data in it, and <span class="file">git restore</span> brings it back.</p>
+</section>
+
 <section class="slide redbg">
   <div class="eyebrow">Before you run the starter · the file is called .mts — here's why</div>
   <h2>What is<br>TypeScript?</h2>
@@ -396,7 +465,7 @@ http://localhost:8000/tickets
 
 <!-- 12 · I DO 5 -->
 <section class="slide ink">
-  <div class="eyebrow">I do · step 5 of 5 — back to that ALERT</div>
+  <div class="eyebrow">I do · the stretch goal — back to that ALERT</div>
   <h2>The reflex, explained</h2>
   <div class="code"><span class="cm">I OPEN:</span>
 http://localhost:8000/alerts
@@ -407,7 +476,8 @@ http://localhost:8000/alerts
   <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "Once a minute,
   all by itself, the server re-checks a rule: any team over 40 open incidents. The service desk carries 52,
   so it fired within seconds. That's a trigger — the client hears about trouble <em>without asking</em>.
-  Your team will replace my rule with one your client actually fears."</p>
+  It is already working in the starter, so you get it for free. <strong style="color:var(--paper)">Making it
+  yours is this week's stretch goal</strong> — take it on once the screen and the AI spec are done."</p>
 </section>
 
 <!-- 13 · I DO RECAP -->
@@ -415,9 +485,9 @@ http://localhost:8000/alerts
   <div class="eyebrow">I do · what you just watched</div>
   <h2>Three ideas. That's the week.</h2>
   <ul class="big">
-    <li><span class="b">1</span><span><strong>The door</strong> — endpoints are just functions that answer over the network (T7A's functions, grown up)</span></li>
-    <li><span class="b">2</span><span><strong>The reflex</strong> — a trigger checks a rule on a clock, and speaks without being asked</span></li>
-    <li><span class="b">3</span><span><strong>The plan</strong> — the AI use cases, written in pencil; next week's AI classes grade them</span></li>
+    <li><span class="b">1</span><span><strong>The screen</strong> — the question picks the form, one series takes one colour, and the table carries everyone the chart leaves behind</span></li>
+    <li><span class="b">2</span><span><strong>The door</strong> — endpoints are just functions that answer over the network (T7A's functions, grown up)</span></li>
+    <li><span class="b">3</span><span><strong>The plan</strong> — the AI spec, in pencil: what it answers <em>and what it refuses</em>; next week's T8B grades it</span></li>
   </ul>
   <p class="sub" style="margin-top:2.5vh"><strong style="color:var(--ink)">At 11:00 you do these exact five
   steps yourself, with me, on your own road.</strong></p>
@@ -494,7 +564,7 @@ http://localhost:8000/tickets      <span class="cm">/  /q/tickets</span></div>
 
 <!-- 19 · WE DO 5 -->
 <section class="slide ink">
-  <div class="eyebrow">We do · step 5 of 5 — the reflex</div>
+  <div class="eyebrow">We do · the stretch goal — the reflex</div>
   <h2>Read what it noticed alone</h2>
   <div class="code"><span class="cm">YOU OPEN:</span>
 http://localhost:8000/alerts
@@ -503,10 +573,44 @@ http://localhost:8000/alerts
 [{"team": "TCS-ServiceDesk-L1-NA-WE", "open": 52, ...}]</div>
   <p class="sub" style="margin-top:2vh"><em>Checkpoint: the alert is there, timestamped, and nobody
   clicked anything to make it.</em> You have personally run an API with a working trigger.
-  The rest of the week is making both <strong>yours</strong>.</p>
+  The rest of the week is making the <strong>screen</strong> and the <strong>AI spec</strong> yours —
+  and then, if there is time, this rule too.</p>
 </section>
 
 <!-- 20 · YOU DO MARKER -->
+<section class="slide ink">
+  <div class="eyebrow">The AI helper · on paper, in pencil</div>
+  <h2>What it answers —<br>and what it refuses</h2>
+  <p class="sub">The RFP wants a helper people ask in plain words. You decide what it does
+  <em>before</em> anyone builds it. Every use case is one sentence, and it must name the endpoint
+  that feeds it:</p>
+  <div class="code">  "A user asks the AI ______________,
+   and it answers ______________
+   using ______________ ."</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">The honesty rule:</strong>
+  no endpoint, no use case. If your API cannot fetch it, the AI cannot answer it — it can only make
+  something up that sounds right.</p>
+  <p class="sub" style="margin-top:2vh">Which is why you also write <strong style="color:var(--paper)">at
+  least two refusals.</strong> "Will this be fixed by Friday?" has no answer in your data. An AI that
+  answers everything is a liar with good manners — and the client will not find out until it has
+  cost them something.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">The AI helper · the dry run</div>
+  <h2>One of you plays the AI</h2>
+  <p class="sub">Before a line of code: one teammate holds the endpoint output and the screen.
+  Another asks questions like a project manager. Nobody types.</p>
+  <ul class="big">
+    <li><span class="b">1</span><span>Ask your five use cases out loud, one at a time.</span></li>
+    <li><span class="b">2</span><span>The "AI" may only answer from what is actually on screen or in the JSON. No guessing, no general knowledge.</span></li>
+    <li><span class="b">3</span><span>Any question the human <strong>cannot</strong> answer is a use case to cut — or an endpoint to go build. Write down which you chose.</span></li>
+  </ul>
+  <p class="sub" style="margin-top:2vh">Ten minutes here saves you from pitching something on Friday
+  that your data cannot do. <strong style="color:var(--ink)">T8B next week grades this draft</strong> —
+  arrive with the weak line already named.</p>
+</section>
+
 <section class="slide redbg">
   <div class="eyebrow">11:25 · your team</div>
   <h2>You do — your project's turn</h2>
@@ -553,13 +657,15 @@ git switch path-typescript    <span class="cm">← or path-sql</span>
   <div class="eyebrow">Due Friday, October 16</div>
   <h2>DEL-1016-api-triggers-ai.md</h2>
   <p class="sub" style="margin-top:1vh"><strong>Deliverable A:</strong> your <span class="file">practice/week7</span> branch, pushed — the lesson, done. <strong>Deliverable B</strong> is a sentence about <strong>your project</strong>:</p>
-  <p class="sub" style="font-size:clamp(16px,2.2vw,26px); font-weight:700; margin-top:0.5vh">“Your project now answers over an API, reacts on its own, and knows what its AI will do.”</p>
+  <p class="sub" style="font-size:clamp(16px,2.2vw,26px); font-weight:700; margin-top:0.5vh">“Your project now has a screen people can read, a written spec for its AI helper, and an API feeding both.”</p>
   <table style="margin-top:2vh">
     <tr><th>Section</th><th>What proves it</th></tr>
-    <tr><td><strong>The endpoints</strong></td><td>At least three, with a pasted sample answer from each</td></tr>
-    <tr><td><strong>The screen</strong></td><td>Screenshot, fed by the API — and how you know it's the API talking</td></tr>
-    <tr><td><strong>The trigger</strong></td><td>Your rule, the alert it raised, and why the client would want it</td></tr>
-    <tr><td><strong>AI use cases</strong></td><td>3–5 in pencil, each naming the endpoint that feeds it</td></tr>
+    <tr><td><strong>1 · The screen</strong></td><td>Screenshot, the form you chose per question, and why that one</td></tr>
+    <tr><td><strong>2 · The AI spec</strong></td><td>3–5 use cases each naming its endpoint, <strong>2+ refusals</strong>, the dry run, your weakest line</td></tr>
+    <tr><td><strong>3 · The endpoints</strong></td><td>At least three, with a pasted sample answer from each</td></tr>
+    <tr><td><strong>4 · Fed by the API</strong></td><td>Stop the server, refresh — paste what the page says</td></tr>
+    <tr><td><strong>5 · Test cases</strong></td><td>6+ run, 2+ edge, <strong>2+ about the screen</strong></td></tr>
+    <tr><td><em>Stretch · The trigger</em></td><td><em>Only after the five above: your rule, the alert, why the client wants it</em></td></tr>
   </table>
   <p class="sub" style="margin-top:2vh">Work ships <strong>branch → PR into main → teammate review → merge</strong>.
   A push straight to main earns the <strong style="color:var(--red)">red X</strong>, not a grade.</p>
