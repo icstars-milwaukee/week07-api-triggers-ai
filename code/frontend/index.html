@@ -1,0 +1,380 @@
+<!doctype html>
+<!--
+  THE SCREEN. This is a frontend file - your file. Open it, read it, change it.
+
+  Week 6 put numbers on a page. Week 7 makes them readable: the right form for
+  each question, one colour, labels that say what the thing is, and a table for
+  anyone the chart does not reach. The numbers arrive by fetch() from your API -
+  this file never opens a CSV.
+
+  Four rules this file follows. Keep them when you change it.
+
+  1. PICK THE FORM FROM THE QUESTION. "How many incidents are there?" is one
+     number - that is a stat tile, not a one-bar chart. "Which team carries the
+     most?" is a comparison across teams - that is a bar chart. Team names are
+     long, so the bars run sideways.
+  2. ONE COLOUR FOR ONE SERIES. Every bar is the same blue. Do NOT shade the big
+     bars darker: bar length already says who is biggest, and colouring by size
+     says it twice while burning the only channel you had left. Colour means
+     "which thing is this", never "how big is this".
+  3. LABEL SPARINGLY, AND NEVER IN THE DATA COLOUR. The value sits at the tip of
+     its bar. Axis ticks carry the rest. Text stays grey or black - the blue bar
+     beside it is what carries identity.
+  4. A CHART IS NOT THE ONLY WAY OUT. "Show the table" gives the same numbers as
+     text, with full team names. Screen readers, colourblind readers, and anyone
+     who wants to copy a number all land there. The chart enhances; the table
+     guarantees.
+
+  Week 8 adds the filter and the drill-down on top of this file. Leave room.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open incidents - the client's tickets</title>
+<style>
+  /* Colours live here as named roles, once. The chart body below never writes a
+     raw hex - it asks for --series-1 or --ink-muted. Change a colour in one
+     place and the whole page follows, light mode and dark mode alike. */
+  :root {
+    color-scheme: light;
+    --surface:   #fcfcfb;   /* the card the chart sits on */
+    --plane:     #f9f9f7;   /* the page behind the cards */
+    --ink:       #0b0b0b;
+    --ink-soft:  #52514e;
+    --ink-muted: #898781;   /* axis ticks and category labels */
+    --grid:      #e1e0d9;   /* hairline, solid, recessive */
+    --baseline:  #c3c2b7;
+    --hairline:  rgba(11, 11, 11, 0.10);
+    --series-1:  #2a78d6;   /* the one series colour. Checked: 3:1+ on the surface. */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface:   #1a1a19;
+      --plane:     #0d0d0d;
+      --ink:       #ffffff;
+      --ink-soft:  #c3c2b7;
+      --ink-muted: #898781;
+      --grid:      #2c2c2a;
+      --baseline:  #383835;
+      --hairline:  rgba(255, 255, 255, 0.10);
+      --series-1:  #3987e5;  /* the same blue, stepped for a dark background */
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px;
+    background: var(--plane); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  p.sub { color: var(--ink-soft); margin: 0 0 28px; }
+
+  /* --- The headline row: one tile per table. A number is its own best chart. --- */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .tile { background: var(--surface); border: 1px solid var(--hairline); border-radius: 10px; padding: 14px 16px; }
+  .tile .label { color: var(--ink-soft); font-size: 13px; }
+  /* Proportional figures on purpose - tabular-nums makes a big number look loose. */
+  .tile .value { font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* --- The chart card --- */
+  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 10px; padding: 20px 20px 8px; }
+  .card h2 { font-size: 17px; margin: 0 0 2px; }
+  .card .note { color: var(--ink-soft); font-size: 13px; margin: 0 0 16px; }
+  .chartbox { position: relative; overflow-x: auto; }
+  svg { display: block; width: 100%; height: auto; }
+
+  .tick text { fill: var(--ink-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .tick line { stroke: var(--grid); stroke-width: 1; }
+  .axis line { stroke: var(--baseline); stroke-width: 1; }
+  .cat { fill: var(--ink-soft); font-size: 12px; }
+  .val { fill: var(--ink); font-size: 12px; font-weight: 600; }
+  .bar { fill: var(--series-1); }
+  .hit { fill: transparent; }
+  .row:hover .bar { opacity: 0.82; }
+
+  /* The tooltip enhances. It never holds the only copy of a value. */
+  .tip {
+    position: absolute; pointer-events: none; opacity: 0;
+    transform: translate(-50%, -100%); transition: opacity .12s;
+    background: var(--ink); color: var(--surface);
+    font-size: 12px; line-height: 1.4; padding: 6px 9px; border-radius: 6px;
+    white-space: nowrap; z-index: 2;
+  }
+  .tip b { font-variant-numeric: tabular-nums; }
+
+  /* --- The table view: the same numbers, guaranteed --- */
+  .toggle {
+    margin: 4px 0 16px; font: inherit; font-size: 13px; cursor: pointer;
+    background: none; border: 1px solid var(--hairline); color: var(--ink-soft);
+    border-radius: 6px; padding: 6px 12px;
+  }
+  .toggle:hover { color: var(--ink); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  caption { text-align: left; color: var(--ink-soft); font-size: 13px; padding-bottom: 8px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--grid); }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  [hidden] { display: none !important; }
+
+  /* Which data am I looking at? Status colour carries a dot AND words - never
+     colour on its own, because plenty of readers will not see it. */
+  .mode {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 13px; color: var(--ink-soft);
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-left-width: 3px; border-radius: 8px;
+    padding: 10px 14px; margin: 0 0 24px;
+  }
+  .mode b { color: var(--ink); }
+  .mode::before {
+    content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%;
+    position: relative; top: 5px;
+  }
+  .mode.live   { border-left-color: #0ca30c; }
+  .mode.live::before   { background: #0ca30c; }
+  .mode.sample { border-left-color: #fab219; }
+  .mode.sample::before { background: #fab219; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>The client's tickets</h1>
+  <p class="sub">Stop the server, refresh, and watch the banner change - that is how you know where a number came from.</p>
+
+  <!-- Live API numbers, or the built-in sample? The page always says which. -->
+  <p class="mode" id="mode" role="status"></p>
+
+  <!-- Six headline numbers. Each one is a single value, so each one is a tile. -->
+  <section class="tiles" id="tiles" aria-label="Row counts by table"></section>
+
+  <section class="card">
+    <h2 id="chartTitle">Open incidents by team</h2>
+    <p class="note">Top 10 teams, highest first. One bar per team, one colour - the length is the message.</p>
+
+    <div class="chartbox">
+      <svg id="chart" role="img" aria-labelledby="chartTitle"></svg>
+      <div class="tip" id="tip"></div>
+    </div>
+
+    <button class="toggle" id="toggle" aria-expanded="false" aria-controls="tableview">Show the table</button>
+    <div id="tableview" hidden>
+      <table>
+        <caption>Open incidents by team - full team names, exact counts.</caption>
+        <thead><tr><th scope="col">Team</th><th scope="col" class="n">Open incidents</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// 1. WHICH ROAD ARE YOU ON? The two roads name their endpoints differently.
+//    Uncomment your line, delete the other. This is the only place in the
+//    file that knows the addresses - that is deliberate. A frontend depends
+//    on the API's contract, so the contract lives in one visible spot.
+// ---------------------------------------------------------------------------
+const API = { counts: "/counts", openByTeam: "/open-by-team" };          // TypeScript road
+// const API = { counts: "/q/counts", openByTeam: "/q/open-by-team" };   // SQL road
+
+async function ask(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(path + " answered " + res.status);
+  return res.json();
+}
+
+// ---------------------------------------------------------------------------
+// 2. The tiles. A single current value is a stat tile, not a chart.
+//
+//    The two roads hand back counts in two shapes: the TypeScript road sends
+//    one object, {incident: 23334, ...}; the SQL road sends rows,
+//    [{table: "incident", rows: 23334}, ...]. Same facts, different clothes.
+//    Normalising here - rather than bending either API - is the job of a
+//    frontend: take what the server gives and present it.
+// ---------------------------------------------------------------------------
+function toPairs(counts) {
+  if (Array.isArray(counts)) return counts.map(r => [r.table, Number(r.rows)]);
+  return Object.entries(counts).map(([k, v]) => [k, Number(v)]);
+}
+
+function drawTiles(counts) {
+  document.getElementById("tiles").innerHTML = toPairs(counts)
+    .map(([table, n]) => '<div class="tile">'
+      + '<div class="value">' + n.toLocaleString() + '</div>'
+      + '<div class="label">' + esc(String(table).replace(/_/g, " ")) + '</div>'
+      + '</div>')
+    .join("");
+}
+
+// ---------------------------------------------------------------------------
+// 3. The bar chart, drawn as SVG by hand so you can see every decision.
+// ---------------------------------------------------------------------------
+const W = 720;        // viewBox width; the SVG scales to fit its container
+const GUTTER = 250;   // room for team names on the left
+const PAD_R = 56;     // room for the value at the tip of the longest bar
+const ROW_H = 34;     // one row per team
+const BAR_H = 20;     // 24px or less. The leftover in the row is air, on purpose.
+const TOP = 28;       // room for the tick numbers above the plot
+
+// A bar grows from the baseline and is rounded at the data end only: 4px on the
+// right, square on the left where it meets the axis.
+function barPath(x0, x1, y, h, r) {
+  r = r || 4;
+  if (x1 - x0 <= r) return "M" + x0 + " " + y + " H" + x1 + " V" + (y + h) + " H" + x0 + " Z";
+  return "M" + x0 + " " + y
+       + " H" + (x1 - r) + " Q" + x1 + " " + y + " " + x1 + " " + (y + r)
+       + " V" + (y + h - r) + " Q" + x1 + " " + (y + h) + " " + (x1 - r) + " " + (y + h)
+       + " H" + x0 + " Z";
+}
+
+// Tick numbers land on round values - 0, 20, 40 - never 0, 17.4, 34.8.
+function niceTicks(max, count) {
+  count = count || 4;
+  const raw = max / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || mag * 10;
+  const top = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let t = 0; t <= top + 1e-9; t += step) ticks.push(Math.round(t * 100) / 100);
+  return ticks;
+}
+
+// Long team names get cut deliberately, with the full name in the tooltip and
+// the table. A label is never allowed to overflow or be clipped by its mark.
+function short(s, n) {
+  n = n || 30;
+  return s.length > n ? s.slice(0, n - 1) + "…" : s;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function drawChart(rows) {
+  const svg = document.getElementById("chart");
+  const tip = document.getElementById("tip");
+  const H = TOP + rows.length * ROW_H + 8;
+  const plotW = W - GUTTER - PAD_R;
+  const ticks = niceTicks(Math.max.apply(null, rows.map(r => r.open)));
+  const scaleMax = ticks[ticks.length - 1];
+  const x = v => GUTTER + (v / scaleMax) * plotW;
+
+  const gridlines = ticks.map(t =>
+    '<g class="tick">'
+    + '<line x1="' + x(t) + '" y1="' + (TOP - 6) + '" x2="' + x(t) + '" y2="' + (H - 8) + '"></line>'
+    + '<text x="' + x(t) + '" y="' + (TOP - 12) + '" text-anchor="middle">' + t.toLocaleString() + '</text>'
+    + '</g>');
+
+  const baseline = '<g class="axis"><line x1="' + GUTTER + '" y1="' + (TOP - 6)
+    + '" x2="' + GUTTER + '" y2="' + (H - 8) + '"></line></g>';
+
+  // One row per team: name, bar, value at the tip, and a tall invisible hit
+  // area so hovering is easy - you aim at the row, not at the 20px bar.
+  const bars = rows.map((r, i) => {
+    const y = TOP + i * ROW_H;
+    const end = x(r.open);
+    return '<g class="row" data-team="' + esc(r.team) + '" data-open="' + r.open + '">'
+      + '<text class="cat" x="' + (GUTTER - 10) + '" y="' + (y + BAR_H / 2 + 4) + '" text-anchor="end">' + esc(short(r.team)) + '</text>'
+      + '<path class="bar" d="' + barPath(GUTTER, end, y, BAR_H) + '"></path>'
+      + '<text class="val" x="' + (end + 8) + '" y="' + (y + BAR_H / 2 + 4) + '">' + r.open.toLocaleString() + '</text>'
+      + '<rect class="hit" x="0" y="' + (y - (ROW_H - BAR_H) / 2) + '" width="' + W + '" height="' + ROW_H + '"></rect>'
+      + '</g>';
+  });
+
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  svg.innerHTML = gridlines.join("") + baseline + bars.join("");
+
+  // Hover adds the full team name. The tip label and the table already carry
+  // the number, so nothing is locked behind the mouse.
+  const box = svg.parentElement;
+  svg.querySelectorAll(".row").forEach(g => {
+    g.addEventListener("pointerenter", () => {
+      const rect = g.querySelector(".hit").getBoundingClientRect();
+      const base = box.getBoundingClientRect();
+      tip.innerHTML = esc(g.dataset.team) + "<br><b>"
+        + Number(g.dataset.open).toLocaleString() + "</b> open";
+      tip.style.left = (rect.left - base.left + rect.width / 2) + "px";
+      tip.style.top = (rect.top - base.top + box.scrollTop) + "px";
+      tip.style.opacity = "1";
+    });
+    g.addEventListener("pointerleave", () => { tip.style.opacity = "0"; });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// 4. The table view - the same rows, as text, with nothing shortened.
+// ---------------------------------------------------------------------------
+function drawTable(rows) {
+  document.getElementById("tbody").innerHTML = rows
+    .map(r => '<tr><td>' + esc(r.team) + '</td><td class="n">' + r.open.toLocaleString() + '</td></tr>')
+    .join("");
+}
+
+const toggle = document.getElementById("toggle");
+toggle.addEventListener("click", () => {
+  const view = document.getElementById("tableview");
+  const showing = !view.hidden;
+  view.hidden = showing;
+  toggle.setAttribute("aria-expanded", String(!showing));
+  toggle.textContent = showing ? "Show the table" : "Hide the table";
+});
+
+// ---------------------------------------------------------------------------
+// 5. SAMPLE DATA - so this file also runs with no server at all.
+//
+//    Opened straight off disk (double-click, or a live editor), there is no API
+//    to call, so the chart draws from these made-up rows instead. That is on
+//    purpose: you can learn every decision in this file - form, colour, labels,
+//    the table - without the client's data anywhere near it. Made-up teams,
+//    made-up numbers, safe to paste anywhere.
+//
+//    When the file is served BY your API, the real numbers win and the sample
+//    is ignored. A banner tells you which one you are looking at, every time -
+//    nobody should ever demo sample numbers believing they are real.
+// ---------------------------------------------------------------------------
+const SAMPLE_COUNTS = {
+  incident: 23334, change_request: 1969, sc_req_item: 17501,
+  sc_task: 16321, change_approvals: 9942, ritm_approvals: 5379,
+};
+const SAMPLE_BY_TEAM = [
+  { team: "Example-ServiceDesk-L1", open: 57 },
+  { team: "Example-Network-L2-EMEA", open: 44 },
+  { team: "Example-EUC-Field-NA", open: 41 },
+  { team: "Example-Apps-SAP-Basis", open: 23 },
+  { team: "Example-Security-IAM", open: 9 },
+  { team: "Example-Reporting", open: 3 },
+];
+
+function banner(live, detail) {
+  const el = document.getElementById("mode");
+  el.className = live ? "mode live" : "mode sample";
+  el.innerHTML = live
+    ? "<b>Live.</b> These numbers came from your API just now."
+    : "<b>Sample data.</b> This screen is not talking to an API - every number "
+      + "below is made up. " + esc(detail);
+}
+
+try {
+  const results = await Promise.all([ask(API.counts), ask(API.openByTeam)]);
+  // Both roads agree on this shape: [{team, open}]. Make open a real number -
+  // "41" sorts and scales like a word, not a quantity.
+  const byTeam = results[1].map(r => ({ team: String(r.team), open: Number(r.open) }));
+  drawTiles(results[0]);
+  drawChart(byTeam);
+  drawTable(byTeam);
+  banner(true);
+} catch (err) {
+  drawTiles(SAMPLE_COUNTS);
+  drawChart(SAMPLE_BY_TEAM);
+  drawTable(SAMPLE_BY_TEAM);
+  banner(false, "(" + err.message + ")");
+}
+</script>
+</body>
+</html>
