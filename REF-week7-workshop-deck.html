@@ -97,11 +97,30 @@
       height:7.5in;width:13.33in;page-break-after:always;overflow:hidden;transition:none}
   }
   .code{font-family:var(--mono);font-size:clamp(12px,1.45vw,18px);line-height:1.55;background:var(--ink-soft);color:var(--paper);padding:2.2vh 1.8vw;border-left:6px solid var(--red);white-space:pre;overflow-x:auto;max-width:100%}  .paper .code{background:#241D25}  .code .cm{color:var(--grey)}</style>
+<!-- ============================================================
+     Additive only. The house template block above is untouched.
+     .hl  = highlight ONLY the part of a snippet that is new
+     .live = the little tag next to a live-demo heading
+     .cs  = CodeSandbox embed frame
+     ============================================================ -->
+<style>
+  .code .hl{color:var(--red);font-weight:700;background:rgba(214,0,60,.14);
+    padding:.05em .25em;border-radius:2px}
+  .live{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.52em;
+    letter-spacing:.2em;text-transform:uppercase;background:var(--red);color:var(--paper);
+    padding:.3em .7em;vertical-align:.4em;margin-left:.7em}
+  .cs{border-left:6px solid var(--red);background:var(--ink-soft);line-height:0}
+  .cs iframe{width:100%;height:54vh;border:0;display:block}
+  .cs-say{font-family:var(--mono);font-size:clamp(12px,1.3vw,16px);line-height:1.5;
+    color:var(--grey);margin-top:1.8vh;max-width:none}
+  @media print{.cs iframe{height:3.6in}}
+</style>
+
 
 <div class="bar" id="bar"></div>
 <div class="brand" id="brand">i.c.stars<span class="pipe">|</span><span class="star">*</span><span class="mke">Milwaukee</span></div>
 <div class="tag">RFP Tech Learning · Week 7</div>
-<div class="counter" id="counter">1 / 18</div>
+<div class="counter" id="counter">1 / 36</div>
 <div class="hint" id="hint">→ arrow keys or tap sides</div>
 <button class="navzone prev" id="zPrev" aria-label="Previous slide"></button>
 <button class="navzone next" id="zNext" aria-label="Next slide"></button>
@@ -111,12 +130,13 @@
 <!-- 1 · TITLE -->
 <section class="slide ink active">
   <div class="eyebrow">Monday, October 12 · 10:30–12:00</div>
-  <h1>Wire it<br>up<span class="star">*</span></h1>
-  <p class="sub" style="margin-top:3vh">Your data is loaded and on a screen. Today it gets a
-  <strong style="color:var(--paper)">front door</strong> (an API), a
-  <strong style="color:var(--paper)">reflex</strong> (a trigger), and a
-  <strong style="color:var(--paper)">plan for its AI</strong>. First I'll do it. Then we'll do it
-  together. Then your team wires your own project.</p>
+  <h1>Make it<br>readable<span class="star">*</span></h1>
+  <p class="sub" style="margin-top:3vh">Your data is loaded and on a screen only you can read.
+  Today that screen becomes something a <strong style="color:var(--paper)">project manager</strong>
+  can read in ten seconds, and you decide
+  <strong style="color:var(--paper)">what your AI helper will do</strong> — and what it will
+  refuse. Underneath both sits the <strong style="color:var(--paper)">API</strong> that feeds them.
+  First I'll do it. Then we'll do it together. Then your team does your own project.</p>
 </section>
 
 <!-- 2 · AGENDA -->
@@ -124,10 +144,11 @@
   <div class="eyebrow">The next 90 minutes</div>
   <h2>Agenda</h2>
   <ul class="big">
-    <li><span class="b">10:30</span><span>The wiring, and why users never see it</span></li>
-    <li><span class="b">10:45</span><span><strong>I do</strong> — watch me wire my copy, out loud. You just watch.</span></li>
+    <li><span class="b">10:30</span><span><strong>The screen</strong> — three decisions that make numbers readable, and <strong>what TypeScript is</strong></span></li>
+    <li><span class="b">10:45</span><span><strong>I do</strong> — watch me feed my screen from an API, out loud. You just watch.</span></li>
     <li><span class="b">11:00</span><span><strong>We do</strong> — all together, one step at a time. Nobody gets left.</span></li>
-    <li><span class="b">11:25</span><span><strong>You do</strong> — your project grows an API, a trigger, and an AI plan</span></li>
+    <li><span class="b">11:20</span><span><strong>The AI helper</strong> — what it answers, and what it refuses</span></li>
+    <li><span class="b">11:30</span><span><strong>You do</strong> — your project grows a readable screen and an AI spec</span></li>
     <li><span class="b">11:50</span><span>Stand and report</span></li>
   </ul>
 </section>
@@ -136,40 +157,226 @@
 <section class="slide ink">
   <div class="eyebrow">The story so far</div>
   <h2>Week 6 built the warehouse.<br>Nobody shops in a warehouse.</h2>
-  <p class="sub">Your screen works — but it talks straight to files on one laptop. Real products
-  put a layer in between, so <em>any</em> screen, a teammate's tool, and the AI helper all ask the
-  same questions at the same door and get the same answers. That layer is this week. Users will
-  never see it — and everything they see will come through it.</p>
+  <p class="sub">Your screen works — for you. It is a wall of numbers reading off files on one
+  laptop. The RFP does not ask for a wall of numbers: it asks for something a project manager can
+  read <em>without training</em>, and can ask questions of in plain words. So this week you build
+  the shop front — and the counter it is served from.</p>
 </section>
 
 <!-- 4 · THE PICTURE -->
 <section class="slide ink">
   <div class="eyebrow">What we're building</div>
-  <h2>The wiring diagram</h2>
-  <div class="code">                     ┌──────────────┐
-  your data  ───────► │   YOUR API   │ ───►  your screen
-  (files / db)        │              │ ───►  a teammate's browser
-                      │  /counts     │ ───►  next week: the AI helper
-     every minute ──► │  /tickets    │
-     a TRIGGER checks │  /alerts     │
-     a rule, alone    └──────────────┘</div>
-  <p class="sub" style="margin-top:2.5vh">Three endpoints, one reflex, one pencil plan for the AI.
-  That's the whole week.</p>
+  <h2>What the client sees,<br>and what holds it up</h2>
+  <div class="code">        WHAT THEY SEE          ┌─ tiles: one number each
+  ┌──────────────────────┐ ────┼─ one bar chart, one colour
+  │     YOUR SCREEN      │     └─ a table view, for everyone else
+  └──────────┬───────────┘
+             │  fetch()
+  ┌──────────┴───────────┐
+  │       YOUR API       │   /counts   /open-by-team   /tickets
+  └──────────┬───────────┘
+             │
+      your data (files / db)      AI SPEC: what it answers,
+                                  what it refuses — on paper</div>
+  <p class="sub" style="margin-top:2.5vh">A readable screen, an AI spec in pencil, three endpoints
+  underneath. That's the week. The trigger is stretch.</p>
 </section>
 
 <!-- 5 · NEW WORDS -->
 <section class="slide paper">
   <div class="eyebrow">New words & ideas</div>
-  <h2>Five words, plainly</h2>
+  <h2>Six words, plainly</h2>
   <table>
     <tr><th>Word</th><th>What it really means</th></tr>
-    <tr><td><strong>API</strong></td><td>A menu of questions your data answers over the network.</td></tr>
-    <tr><td><strong>Endpoint</strong></td><td>One item on that menu. <span class="file">/tickets?team=NAME</span> is an endpoint with a filter.</td></tr>
-    <tr><td><strong>JSON</strong></td><td>The answer's format — data dressed for machines, readable by humans.</td></tr>
-    <tr><td><strong>Trigger</strong></td><td>Code that runs on a clock or an event, not on a click. It notices things nobody asked about.</td></tr>
+    <tr><td><strong>Form</strong></td><td>The shape you draw data in. One number is a tile. A comparison is bars. The question picks it — not your taste.</td></tr>
+    <tr><td><strong>Series</strong></td><td>One set of related numbers. One series gets one colour.</td></tr>
+    <tr><td><strong>Table view</strong></td><td>The same numbers as plain text. The chart enhances; the table guarantees.</td></tr>
+    <tr><td><strong>API</strong></td><td>A menu of questions your data answers over the network. One item on it — <span class="file">/tickets?team=NAME</span> — is an <strong>endpoint</strong>.</td></tr>
     <tr><td><strong>AI use case</strong></td><td>One sentence: "A user asks the AI ___, and it answers ___ using ___ data."</td></tr>
+    <tr><td><strong>Refusal</strong></td><td>What your AI says when it doesn't know. An AI with no refusals is a liar with good manners.</td></tr>
   </table>
 </section>
+
+<!-- 5a · WHAT IS TYPESCRIPT -->
+<section class="slide ink">
+  <div class="eyebrow">The screen · decision 1 of 3</div>
+  <h2>The question picks<br>the picture</h2>
+  <table>
+    <tr><th>The question a user asks</th><th>What it is</th><th>So you draw</th></tr>
+    <tr><td>"How many incidents are there?"</td><td>one number</td><td>a <strong>tile</strong> — not a one-bar chart</td></tr>
+    <tr><td>"Which team has the most open?"</td><td>a comparison</td><td><strong>bars</strong>, sideways (team names are long)</td></tr>
+    <tr><td>"What happened over the month?"</td><td>a trend</td><td>a <strong>line</strong></td></tr>
+    <tr><td>"Show me every ticket"</td><td>400 rows</td><td>a <strong>table</strong>. No chart. That's fine.</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2.5vh">Not your taste. Not what looks impressive.
+  <strong style="color:var(--paper)">The question.</strong> That is T7B — from stories to design —
+  pointed at a screen.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">The screen · decision 2 of 3</div>
+  <h2>One series, one colour</h2>
+  <p class="sub">Every bar on your chart is the same blue. The temptation is to shade the big ones
+  darker — resist it.</p>
+  <ul class="big">
+    <li><span class="b">1</span><span>The bar's <strong>length</strong> already says who is biggest. Colouring by size says it a second time.</span></li>
+    <li><span class="b">2</span><span>You just spent your only spare channel. Next week you need colour to mean <em>"this one is filtered"</em> — and it is gone.</span></li>
+    <li><span class="b">3</span><span>Colour means <strong>which thing is this</strong>. Length means <strong>how big is it</strong>. Keep those jobs apart and nobody misreads your screen.</span></li>
+  </ul>
+  <p class="sub" style="margin-top:2vh">Same rule, said shorter: <strong style="color:var(--ink)">if the
+  chart already shows it, colour shouldn't repeat it.</strong></p>
+</section>
+
+<section class="slide ink">
+  <div class="eyebrow">The screen · decision 3 of 3</div>
+  <h2>Who does your chart<br>leave behind?</h2>
+  <p class="sub">About one man in twelve cannot reliably tell your colours apart. Somebody is on a
+  phone in the sun. Somebody uses a screen reader. Somebody just wants to copy the number into an
+  email.</p>
+  <p class="sub" style="margin-top:2vh">All four of them need the same thing: <strong style="color:var(--paper)">the
+  table view</strong> — your numbers as plain text, full team names, nothing shortened.</p>
+  <div class="code">  the chart  ──►  enhances      (fast, pretty, approximate)
+  the table  ──►  guarantees    (exact, copyable, readable by anything)</div>
+  <p class="sub" style="margin-top:2.5vh">Which is why <strong style="color:var(--paper)">a number that
+  exists only in a tooltip does not exist.</strong> Hover is a bonus, never the only way in.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">Try it · nothing running, no data</div>
+  <h2>Open the screen<br>with no server at all</h2>
+  <p class="sub">Find <span class="file">code/frontend/index.html</span> and double-click it. No
+  terminal, no API, no client data. It draws from a made-up sample built into the file, and the
+  banner at the top says so.</p>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--ink)">Now break it on purpose.</strong>
+  Change one thing, refresh, see what it teaches:</p>
+  <table style="margin-top:1vh">
+    <tr><th>Change this</th><th>And learn</th></tr>
+    <tr><td><span class="file">BAR_H</span> from 20 to 60</td><td>why bars are capped — thick blocks read loud and childish</td></tr>
+    <tr><td><span class="file">--series-1</span> to a pale yellow</td><td>why a colour has to earn its contrast against the surface</td></tr>
+    <tr><td><span class="file">short(r.team)</span> to <span class="file">r.team</span></td><td>what a label does when nobody measured it first</td></tr>
+    <tr><td>delete the <span class="file">.val</span> text line</td><td>how much the axis alone can carry — and where it stops</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2vh">This is the safest file in the repo to wreck. It has no real
+  data in it, and <span class="file">git restore</span> brings it back.</p>
+</section>
+
+<section class="slide redbg">
+  <div class="eyebrow">Before you run the starter · the file is called .mts — here's why</div>
+  <h2>What is<br>TypeScript?</h2>
+  <p class="sub" style="margin-top:1vh;font-size:clamp(18px,2.4vw,30px)">
+  <strong style="color:var(--paper)">JavaScript, with the types written down.</strong></p>
+  <p class="sub" style="margin-top:2.5vh">That's the whole answer. It is not a new language — it is
+  the JavaScript you already write, plus notes about what each thing is allowed to be.
+  Delete the notes and you have JavaScript back.
+  <strong style="color:var(--paper)">The notes are for a checker that reads your code before it runs.</strong></p>
+  <p class="stamp">.mts  =  m odule + t ype s cript</p>
+</section>
+
+<!-- 5b · JS VS TS -->
+<section class="slide ink">
+  <div class="eyebrow">Same code, twice · only the highlighted parts are new</div>
+  <h2>The types written down</h2>
+  <div class="code"><span class="cm">JAVASCRIPT — you already write this:</span>
+let team = "TCS-ServiceDesk-L1-NA-WE";
+let open = 52;
+
+function isBusy(count) {
+  return count &gt; 40;
+}
+
+<span class="cm">TYPESCRIPT — the identical code, plus the notes:</span>
+let team<span class="hl">: string</span> = "TCS-ServiceDesk-L1-NA-WE";
+let open<span class="hl">: number</span> = 52;
+
+function isBusy(count<span class="hl">: number</span>)<span class="hl">: boolean</span> {
+  return count &gt; 40;
+}
+
+<span class="cm">Now this mistake is caught BEFORE the server starts:</span>
+isBusy(<span class="hl">"fifty-two"</span>);
+<span class="cm">       ^ Argument of type 'string' is not assignable to parameter of type 'number'.</span></div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong>
+  "Four small notes. That's the entire difference on this slide. And the payoff is the last line —
+  a bug the client never sees, because the code wouldn't even start."</p>
+</section>
+
+<!-- 5c · KEYWORDS -->
+<section class="slide paper">
+  <div class="eyebrow">Write these down · you will see every one of them tonight</div>
+  <h2>Keywords to watch</h2>
+  <table>
+    <tr><th style="width:27%">You'll see</th><th>Read it out loud as</th></tr>
+    <tr><td><span class="file">: string</span> <span class="file">: number</span></td><td><strong>"is a"</strong> — an <em>annotation</em>. The note itself.</td></tr>
+    <tr><td><span class="file">type</span></td><td><strong>"let me name a shape"</strong> — so you write it once and reuse it everywhere.</td></tr>
+    <tr><td><span class="file">Row[]</span></td><td><strong>"a list of Rows"</strong> — the <span class="file">[]</span> means many.</td></tr>
+    <tr><td><span class="file">Record&lt;string, number&gt;</span></td><td><strong>"an object whose keys I don't know yet, whose values are numbers"</strong></td></tr>
+    <tr><td><span class="file">?</span> and <span class="file">??</span></td><td><strong>"might be missing"</strong> · <strong>"use this instead if it is"</strong></td></tr>
+    <tr><td><span class="file">as Row[]</span></td><td><strong>"trust me, it's this"</strong> — you overriding the checker. Use rarely.</td></tr>
+    <tr><td><span class="file">type ServerResponse</span></td><td><strong>"import only the shape, not real code"</strong> — note the word <span class="file">type</span> inside the import.</td></tr>
+  </table>
+  <p class="sub" style="margin-top:2vh">Seven things. <strong style="color:var(--ink)">Every one of them appears in
+  the starter you're about to run</strong> — so when you see it, you'll know what it is instead of scrolling past it.</p>
+</section>
+
+<!-- 5d · THE STARTER'S OWN SHAPES -->
+<section class="slide ink">
+  <div class="eyebrow">Open your starter · these are lines 24-27, unedited</div>
+  <h2>The shapes your<br>API trades in</h2>
+  <div class="code"><span class="cm">From code/path-typescript-api.mts — the real file:</span>
+<span class="hl">type</span> Row       = <span class="hl">Record&lt;string, string&gt;</span>;
+<span class="hl">type</span> TeamCount = { team<span class="hl">: string</span>; open<span class="hl">: number</span> };
+<span class="hl">type</span> Alert     = { team<span class="hl">: string</span>; open<span class="hl">: number</span>; rule<span class="hl">: string</span>; at<span class="hl">: string</span> };
+
+<span class="cm">And then every route PROMISES to return one of those shapes:</span>
+function qOpenByTeam()<span class="hl">: TeamCount[]</span> {
+  ...
+}
+
+function qTickets(team<span class="hl">: string</span>) {
+  ...
+}</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong>
+  "Read the comment the starter already has above those lines: <em>'write them down once and the
+  checker keeps every route honest — misspell a field and the code won't even start.'</em>
+  That is why your API can be trusted by a screen, a teammate, and next week's AI at the same time."</p>
+</section>
+
+<!-- 5e · CODESANDBOX LIVE 1 -->
+<section class="slide ink">
+  <div class="eyebrow">Live · nothing to install — this is running in the slide</div>
+  <h2>Try it<span class="live">codesandbox</span></h2>
+  <div class="cs">
+    <iframe
+      src="https://codesandbox.io/embed/qcmvgv?fontsize=14&amp;hidenavigation=1&amp;theme=dark&amp;view=split&amp;module=%2Findex.ts"
+      title="TypeScript — what it is"
+      allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+      loading="lazy"></iframe>
+  </div>
+  <p class="cs-say">Scroll to the bottom of <span class="file">index.ts</span> and
+  <strong style="color:var(--paper)">uncomment the last line.</strong> The red underline appears
+  while you type — no saving, no running, no waiting.</p>
+</section>
+
+<!-- 5f · CODESANDBOX LIVE 2 -->
+<section class="slide ink">
+  <div class="eyebrow">Live · your starter's actual shapes — break them on purpose</div>
+  <h2>Break it<span class="live">codesandbox</span></h2>
+  <div class="cs">
+    <iframe
+      src="https://codesandbox.io/embed/r6g56x?fontsize=14&amp;hidenavigation=1&amp;theme=dark&amp;view=editor&amp;module=%2Findex.ts"
+      title="TypeScript — the week 7 shapes"
+      allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+      loading="lazy"></iframe>
+  </div>
+  <p class="cs-say">Three commented-out mistakes at the bottom. Uncomment them one at a time:
+  <strong style="color:var(--paper)">a misspelled field</strong> ·
+  <strong style="color:var(--paper)">the wrong type</strong> ·
+  <strong style="color:var(--paper)">a missing field</strong>. All three are the bugs that would
+  otherwise reach your client.</p>
+</section>
+
 
 <!-- 6 · METHOD -->
 <section class="slide paper">
@@ -200,7 +407,7 @@
   <h2>I fetch the kit</h2>
   <div class="code"><span class="cm">Terminal, next to my project. I TYPE:</span>
 git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
-copy week07-api-triggers-ai\code\path-python-api.py my-project\code\
+copy week07-api-triggers-ai\code\path-typescript-api.mts my-project\code\
 
 <span class="cm">THE SCREEN SAYS:</span>
         1 file(s) copied.</div>
@@ -214,7 +421,7 @@ copy week07-api-triggers-ai\code\path-python-api.py my-project\code\
   <div class="eyebrow">I do · step 2 of 5</div>
   <h2>I start the API</h2>
   <div class="code"><span class="cm">From MY PROJECT's folder. I TYPE:</span>
-python code/path-python-api.py
+node code/path-typescript-api.mts
 
 <span class="cm">THE SCREEN SAYS:</span>
 Your API is at  http://localhost:8000  (Ctrl+C stops it)
@@ -258,7 +465,7 @@ http://localhost:8000/tickets
 
 <!-- 12 · I DO 5 -->
 <section class="slide ink">
-  <div class="eyebrow">I do · step 5 of 5 — back to that ALERT</div>
+  <div class="eyebrow">I do · the stretch goal — back to that ALERT</div>
   <h2>The reflex, explained</h2>
   <div class="code"><span class="cm">I OPEN:</span>
 http://localhost:8000/alerts
@@ -269,7 +476,8 @@ http://localhost:8000/alerts
   <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">I say:</strong> "Once a minute,
   all by itself, the server re-checks a rule: any team over 40 open incidents. The service desk carries 52,
   so it fired within seconds. That's a trigger — the client hears about trouble <em>without asking</em>.
-  Your team will replace my rule with one your client actually fears."</p>
+  It is already working in the starter, so you get it for free. <strong style="color:var(--paper)">Making it
+  yours is this week's stretch goal</strong> — take it on once the screen and the AI spec are done."</p>
 </section>
 
 <!-- 13 · I DO RECAP -->
@@ -277,9 +485,9 @@ http://localhost:8000/alerts
   <div class="eyebrow">I do · what you just watched</div>
   <h2>Three ideas. That's the week.</h2>
   <ul class="big">
-    <li><span class="b">1</span><span><strong>The door</strong> — endpoints are just functions that answer over the network (T7A's functions, grown up)</span></li>
-    <li><span class="b">2</span><span><strong>The reflex</strong> — a trigger checks a rule on a clock, and speaks without being asked</span></li>
-    <li><span class="b">3</span><span><strong>The plan</strong> — the AI use cases, written in pencil; next week's AI classes grade them</span></li>
+    <li><span class="b">1</span><span><strong>The screen</strong> — the question picks the form, one series takes one colour, and the table carries everyone the chart leaves behind</span></li>
+    <li><span class="b">2</span><span><strong>The door</strong> — endpoints are just functions that answer over the network (T7A's functions, grown up)</span></li>
+    <li><span class="b">3</span><span><strong>The plan</strong> — the AI spec, in pencil: what it answers <em>and what it refuses</em>; next week's T8B grades it</span></li>
   </ul>
   <p class="sub" style="margin-top:2.5vh"><strong style="color:var(--ink)">At 11:00 you do these exact five
   steps yourself, with me, on your own road.</strong></p>
@@ -304,9 +512,8 @@ http://localhost:8000/alerts
 git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
 
 <span class="cm">Then copy YOUR road's starter into YOUR project's code\ folder:</span>
-<span class="cm">Python road:</span>  copy week07-api-triggers-ai\code\path-python-api.py  YOUR-PROJECT\code\
-<span class="cm">Node road:</span>    copy week07-api-triggers-ai\code\path-node-api.mjs   YOUR-PROJECT\code\
-<span class="cm">SQL road:</span>     copy week07-api-triggers-ai\code\path-sql-api.py     YOUR-PROJECT\code\
+<span class="cm">TypeScript road:</span>  copy week07-api-triggers-ai\code\path-typescript-api.mts  YOUR-PROJECT\code\
+<span class="cm">SQL road:</span>     copy week07-api-triggers-ai\code\path-sql-api.mts    YOUR-PROJECT\code\
           xcopy week07-api-triggers-ai\code\queries  YOUR-PROJECT\code\queries\ /E /I</div>
   <p class="sub" style="margin-top:2vh"><em>Checkpoint: the file is in your project's
   <span class="file">code\</span> folder — look in File Explorer. Thumbs up.</em></p>
@@ -317,9 +524,8 @@ git clone https://github.com/icstars-milwaukee/week07-api-triggers-ai
   <div class="eyebrow">We do · step 2 of 5 — open the door</div>
   <h2>Start your API</h2>
   <div class="code"><span class="cm">From YOUR PROJECT's folder — your road's line:</span>
-<span class="cm">Python road:</span>  python code/path-python-api.py
-<span class="cm">Node road:</span>    node code/path-node-api.mjs
-<span class="cm">SQL road:</span>     python code/path-sql-api.py
+<span class="cm">TypeScript road:</span>  node code/path-typescript-api.mts
+<span class="cm">SQL road:</span>     node code/path-sql-api.mts
 
 <span class="cm">THE SCREEN SAYS (every road):</span>
 Your API is at  http://localhost:8000  (Ctrl+C stops it)
@@ -333,7 +539,7 @@ ALERT  ...  TCS-ServiceDesk-L1-NA-WE has 52 open incidents</div>
   <div class="eyebrow">We do · step 3 of 5 — knock</div>
   <h2>Ask for the counts</h2>
   <div class="code"><span class="cm">In your browser, YOU OPEN:</span>
-http://localhost:8000/counts          <span class="cm">← Python & Node roads</span>
+http://localhost:8000/counts          <span class="cm">← TypeScript road</span>
 http://localhost:8000/q/counts        <span class="cm">← SQL road</span>
 
 <span class="cm">THE SCREEN SAYS (JSON, with the numbers you already trust):</span>
@@ -347,7 +553,7 @@ http://localhost:8000/q/counts        <span class="cm">← SQL road</span>
   <div class="eyebrow">We do · step 4 of 5 — filter, then break it</div>
   <h2>Ask a filtered question. Then ask badly.</h2>
   <div class="code"><span class="cm">YOU OPEN (one line — the team name matters):</span>
-http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE     <span class="cm">← Python & Node</span>
+http://localhost:8000/tickets?team=TCS-ServiceDesk-L1-NA-WE     <span class="cm">← TypeScript road</span>
 http://localhost:8000/q/tickets?arg=TCS-ServiceDesk-L1-NA-WE    <span class="cm">← SQL road</span>
 
 <span class="cm">Then leave the team off and read what comes back:</span>
@@ -358,7 +564,7 @@ http://localhost:8000/tickets      <span class="cm">/  /q/tickets</span></div>
 
 <!-- 19 · WE DO 5 -->
 <section class="slide ink">
-  <div class="eyebrow">We do · step 5 of 5 — the reflex</div>
+  <div class="eyebrow">We do · the stretch goal — the reflex</div>
   <h2>Read what it noticed alone</h2>
   <div class="code"><span class="cm">YOU OPEN:</span>
 http://localhost:8000/alerts
@@ -367,10 +573,44 @@ http://localhost:8000/alerts
 [{"team": "TCS-ServiceDesk-L1-NA-WE", "open": 52, ...}]</div>
   <p class="sub" style="margin-top:2vh"><em>Checkpoint: the alert is there, timestamped, and nobody
   clicked anything to make it.</em> You have personally run an API with a working trigger.
-  The rest of the week is making both <strong>yours</strong>.</p>
+  The rest of the week is making the <strong>screen</strong> and the <strong>AI spec</strong> yours —
+  and then, if there is time, this rule too.</p>
 </section>
 
 <!-- 20 · YOU DO MARKER -->
+<section class="slide ink">
+  <div class="eyebrow">The AI helper · on paper, in pencil</div>
+  <h2>What it answers —<br>and what it refuses</h2>
+  <p class="sub">The RFP wants a helper people ask in plain words. You decide what it does
+  <em>before</em> anyone builds it. Every use case is one sentence, and it must name the endpoint
+  that feeds it:</p>
+  <div class="code">  "A user asks the AI ______________,
+   and it answers ______________
+   using ______________ ."</div>
+  <p class="sub" style="margin-top:2vh"><strong style="color:var(--paper)">The honesty rule:</strong>
+  no endpoint, no use case. If your API cannot fetch it, the AI cannot answer it — it can only make
+  something up that sounds right.</p>
+  <p class="sub" style="margin-top:2vh">Which is why you also write <strong style="color:var(--paper)">at
+  least two refusals.</strong> "Will this be fixed by Friday?" has no answer in your data. An AI that
+  answers everything is a liar with good manners — and the client will not find out until it has
+  cost them something.</p>
+</section>
+
+<section class="slide paper">
+  <div class="eyebrow">The AI helper · the dry run</div>
+  <h2>One of you plays the AI</h2>
+  <p class="sub">Before a line of code: one teammate holds the endpoint output and the screen.
+  Another asks questions like a project manager. Nobody types.</p>
+  <ul class="big">
+    <li><span class="b">1</span><span>Ask your five use cases out loud, one at a time.</span></li>
+    <li><span class="b">2</span><span>The "AI" may only answer from what is actually on screen or in the JSON. No guessing, no general knowledge.</span></li>
+    <li><span class="b">3</span><span>Any question the human <strong>cannot</strong> answer is a use case to cut — or an endpoint to go build. Write down which you chose.</span></li>
+  </ul>
+  <p class="sub" style="margin-top:2vh">Ten minutes here saves you from pitching something on Friday
+  that your data cannot do. <strong style="color:var(--ink)">T8B next week grades this draft</strong> —
+  arrive with the weak line already named.</p>
+</section>
+
 <section class="slide redbg">
   <div class="eyebrow">11:25 · your team</div>
   <h2>You do — your project's turn</h2>
@@ -392,7 +632,7 @@ git pull
 git switch -c practice/week7  <span class="cm">← the practice bench — this branch IS Deliverable A</span>
 
 <span class="cm">2 · Open the walkthrough — in THIS lesson repo, on your road's branch:</span>
-git switch path-python        <span class="cm">← or path-node, or path-sql</span>
+git switch path-typescript    <span class="cm">← or path-sql</span>
 <span class="cm">    then click LESSON.md — numbered steps, exact commands, all the way to the PR</span></div>
   <p class="sub" style="margin-top:2vh">From here the lesson holds your hand. The deck's job is done —
   the lesson takes over.</p>
@@ -417,13 +657,15 @@ git switch path-python        <span class="cm">← or path-node, or path-sql</sp
   <div class="eyebrow">Due Friday, October 16</div>
   <h2>DEL-1016-api-triggers-ai.md</h2>
   <p class="sub" style="margin-top:1vh"><strong>Deliverable A:</strong> your <span class="file">practice/week7</span> branch, pushed — the lesson, done. <strong>Deliverable B</strong> is a sentence about <strong>your project</strong>:</p>
-  <p class="sub" style="font-size:clamp(16px,2.2vw,26px); font-weight:700; margin-top:0.5vh">“Your project now answers over an API, reacts on its own, and knows what its AI will do.”</p>
+  <p class="sub" style="font-size:clamp(16px,2.2vw,26px); font-weight:700; margin-top:0.5vh">“Your project now has a screen people can read, a written spec for its AI helper, and an API feeding both.”</p>
   <table style="margin-top:2vh">
     <tr><th>Section</th><th>What proves it</th></tr>
-    <tr><td><strong>The endpoints</strong></td><td>At least three, with a pasted sample answer from each</td></tr>
-    <tr><td><strong>The screen</strong></td><td>Screenshot, fed by the API — and how you know it's the API talking</td></tr>
-    <tr><td><strong>The trigger</strong></td><td>Your rule, the alert it raised, and why the client would want it</td></tr>
-    <tr><td><strong>AI use cases</strong></td><td>3–5 in pencil, each naming the endpoint that feeds it</td></tr>
+    <tr><td><strong>1 · The screen</strong></td><td>Screenshot, the form you chose per question, and why that one</td></tr>
+    <tr><td><strong>2 · The AI spec</strong></td><td>3–5 use cases each naming its endpoint, <strong>2+ refusals</strong>, the dry run, your weakest line</td></tr>
+    <tr><td><strong>3 · The endpoints</strong></td><td>At least three, with a pasted sample answer from each</td></tr>
+    <tr><td><strong>4 · Fed by the API</strong></td><td>Stop the server, refresh — paste what the page says</td></tr>
+    <tr><td><strong>5 · Test cases</strong></td><td>6+ run, 2+ edge, <strong>2+ about the screen</strong></td></tr>
+    <tr><td><em>Stretch · The trigger</em></td><td><em>Only after the five above: your rule, the alert, why the client wants it</em></td></tr>
   </table>
   <p class="sub" style="margin-top:2vh">Work ships <strong>branch → PR into main → teammate review → merge</strong>.
   A push straight to main earns the <strong style="color:var(--red)">red X</strong>, not a grade.</p>

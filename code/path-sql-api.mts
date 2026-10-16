@@ -59,41 +59,17 @@ function checkAlertRule(): void {
   }
 }
 
-// ---- The screen, now fed by the API. ----
-// Same page as week 6's dashboard - but look at the <script>: the
-// numbers arrive by fetch() from /q/counts and /q/open-by-team. The screen
-// no longer touches the database. THAT is the week: a layer in between.
+// ---- The screen: a file you own, served by this API. ----
+// The page itself now lives in  code/frontend/index.html  - a real frontend
+// file you can open in an editor and in a browser. This server just hands it
+// over. Open it: that is where week 7's front half lives - which form fits
+// which question, one colour per series, labels that stay out of the data's
+// way, and a table for the readers a chart does not reach.
+//
+// ONE EDIT FIRST: on this road the endpoints are /q/counts and /q/open-by-team,
+// so switch the API line at the top of that file to the SQL road's. It is marked.
 
-const PAGE = `<!doctype html>
-<html><head><meta charset="utf-8"><title>ServiceNow - fed by the API</title>
-<style>
-  body { font: 16px/1.5 system-ui, sans-serif; margin: 40px auto; max-width: 860px; color: #14202b; }
-  h1 { margin-bottom: 4px; }  p.sub { color: #5b6b7a; margin-top: 0; }
-  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
-  .card { border: 1px solid #d5dde5; border-radius: 10px; padding: 14px 18px; min-width: 140px; }
-  .card b { display: block; font-size: 24px; }
-  .card span { color: #5b6b7a; font-size: 13px; }
-  table { border-collapse: collapse; width: 100%; }
-  td, th { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e3e9ef; }
-  td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
-</style></head><body>
-<h1>The client's tickets</h1>
-<p class="sub">Same screen as week 6 - but every number below arrives through the API.</p>
-<div class="cards" id="cards"></div>
-<h2>Open incidents per team (top 10)</h2>
-<table id="top"><tr><th>Team</th><th>Open</th></tr></table>
-<script>
-  fetch("/q/counts").then(r => r.json()).then(rows => {
-    document.getElementById("cards").innerHTML = rows
-      .map(r => "<div class='card'><b>" + r.rows.toLocaleString() + "</b><span>" + r.table + "</span></div>")
-      .join("");
-  });
-  fetch("/q/open-by-team").then(r => r.json()).then(rows => {
-    document.getElementById("top").innerHTML += rows
-      .map(r => "<tr><td>" + r.team + "</td><td>" + r.open + "</td></tr>").join("");
-  });
-</script>
-</body></html>`;
+const SCREEN = join(dirname(fileURLToPath(import.meta.url)), "frontend", "index.html");
 
 const json = (res: ServerResponse, status: number, body: unknown): void => {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
@@ -107,7 +83,9 @@ createServer((req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
   if (url.pathname === "/") {
     res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-    return res.end(PAGE);
+    // Read fresh on every request: edit the frontend file, refresh the
+    // browser, see the change. No restart.
+    return res.end(readFileSync(SCREEN));
   }
   if (url.pathname === "/alerts") return json(res, 200, alerts);
   if (url.pathname.startsWith("/q/")) {
