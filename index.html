@@ -286,10 +286,29 @@ git switch path-sql
 
   <!-- ============================================================ -->
   <h2><span class="n">4</span>What you hand in</h2>
-  <p class="lede">Six boxes. Tick them as you go — this page remembers.</p>
+  <p class="lede">Six boxes, in the order the week runs. Tick them as you go — this page remembers.</p>
 
   <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d1"><span>
+    <label class="chk"><input type="checkbox" data-id="w1"><span>
+      <h3>A screen someone can read in ten seconds</h3>
+      <p>The right form for each question, one colour per series, a label on everything,
+      and a table view that shows every number the chart shows.</p>
+      <div class="meta">start in → code/frontend/index.html · it lists the four rules it follows</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="w2"><span>
+      <h3>The AI helper spec, in pencil</h3>
+      <p>All four sections: 3–5 use cases each naming the endpoint that feeds it,
+      <strong>2 or more refusals</strong>, the dry run where a human plays the AI, and the
+      one line you're least sure about.</p>
+      <div class="meta">write it in → AI-USE-CASES.md · expect to cut one next week</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="w3"><span>
       <h3>Three working endpoints</h3>
       <p>At minimum: counts, a filtered ticket list, and one question from your DEL-1009 queries.
       For each: the address, plus a pasted sample of what it answers.</p>
@@ -298,46 +317,38 @@ git switch path-sql
   </div>
 
   <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d2"><span>
-      <h3>Your week-6 screen, fed by the API</h3>
-      <p>Screenshot it. Then one sentence on how you <em>know</em> it's the API talking.</p>
-      <div class="meta">the trick: stop the server, refresh, see what breaks</div>
+    <label class="chk"><input type="checkbox" data-id="w4"><span>
+      <h3>Your screen, fed by the API</h3>
+      <p>Not reading the files any more. One sentence on how you <em>know</em> it's the API talking.</p>
+      <div class="meta">the trick: stop the server, refresh, watch the banner change</div>
     </span></label>
   </div>
 
   <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d3"><span>
-      <h3>One working trigger</h3>
-      <p>Paste the alert it raised. One sentence on why your team picked that rule.</p>
-      <div class="meta">ask: what would the client want told without asking?</div>
-    </span></label>
-  </div>
-
-  <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d4"><span>
-      <h3>3–5 AI use cases, in pencil</h3>
-      <p>Each one sentence: "A user asks the AI ___, and it answers ___ using ___ data."
-      Each must name the endpoint that feeds it.</p>
-      <div class="meta">write it in → AI-USE-CASES.md · expect to cut one next week</div>
-    </span></label>
-  </div>
-
-  <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d5"><span>
+    <label class="chk"><input type="checkbox" data-id="w5"><span>
       <h3>Test cases, written first, then run</h3>
       <p><strong>6 or more</strong> cases · <strong>2 or more</strong> edge cases ·
-      at least one covering your trigger <strong>both ways</strong> (fires when it should,
-      stays quiet when it shouldn't).</p>
+      <strong>2 or more</strong> about the screen rather than the endpoints.</p>
       <div class="meta">write it in → TEST-CASES.md</div>
     </span></label>
   </div>
 
   <div class="card" data-chk>
-    <label class="chk"><input type="checkbox" data-id="d6"><span>
+    <label class="chk"><input type="checkbox" data-id="w6"><span>
       <h3>Shipped the right way</h3>
       <p>Every teammate in the commit history, and the milestone went
       <strong>branch → PR → teammate review → merge</strong>.</p>
       <div class="meta">a push straight to main earns a red X, not a grade</div>
+    </span></label>
+  </div>
+
+  <div class="card" data-chk>
+    <label class="chk"><input type="checkbox" data-id="s1"><span>
+      <h3>Stretch — one working trigger</h3>
+      <p>Something your system notices on its own, with nobody clicking. Paste the alert it
+      raised and one sentence on why your team picked that rule.
+      <strong>Take this on once the six above are done</strong> — it is extra credit, not a gap.</p>
+      <div class="meta">ask: what would the client want told without asking?</div>
     </span></label>
   </div>
 
@@ -346,14 +357,28 @@ git switch path-sql
 
   <!-- ============================================================ -->
   <h2><span class="n">5</span>Every file, and whether you touch it</h2>
-  <p class="lede">The whole repo. Six of these you can ignore today.</p>
+  <p class="lede">The whole repo. Most of these you can ignore today.</p>
+
+  <div class="file">
+    <span class="ic"><span class="badge b-edit">edit this</span></span>
+    <div class="body">
+      <code>code/frontend/index.html</code>
+      <div class="what"><strong>The screen — this week's main event.</strong> A real frontend file:
+        the tiles, the bar chart, the table view, and a comment block at the top with the four
+        rules it follows. Served by your API it shows real numbers; opened straight off disk with
+        no server it draws a built-in made-up sample, so you can learn every decision in it
+        without client data anywhere. The page always says which one you're looking at.
+        <span class="only-sql"><strong>SQL road: switch the <code>API</code> line at the top to
+        the <code>/q/</code> addresses — it's marked.</strong></span></div>
+    </div>
+  </div>
 
   <div class="file">
     <span class="ic"><span class="badge b-run">run it</span></span>
     <div class="body">
       <code class="only-ts">code/path-typescript-api.mts</code>
       <code class="only-sql">code/path-sql-api.mts</code>
-      <div class="what only-ts">Your starter: the API and your first trigger, in TypeScript.
+      <div class="what only-ts">Your starter: the API that feeds the screen (and serves it), in TypeScript.
         Copy it into your project, then make it yours. Run it with
         <code>node code/path-typescript-api.mts</code> (needs Node 24+).</div>
       <div class="what only-sql">The server that runs your <code>.sql</code> files as endpoints.
@@ -390,7 +415,7 @@ git switch path-sql
     <div class="body">
       <code>DEL-1016-api-triggers-ai.md</code>
       <div class="what"><strong>The deliverable.</strong> Has a numbered blank for every box in
-        section 3 above. Fill it in as you go, not on Thursday night.</div>
+        section 4 above. Fill it in as you go, not on Thursday night.</div>
     </div>
   </div>
 
@@ -398,8 +423,10 @@ git switch path-sql
     <span class="ic"><span class="badge b-write">write in it</span></span>
     <div class="body">
       <code>AI-USE-CASES.md</code>
-      <div class="what">The pencil draft. Shows you the sentence shape and the honesty rule:
-        no endpoint, no use case.</div>
+      <div class="what">The AI spec, in pencil — four sections: what it answers, what it
+        <strong>refuses</strong> (2 or more), the dry run where a teammate plays the AI, and the
+        line you're least sure about. The honesty rule runs through all of it: no endpoint, no
+        use case.</div>
     </div>
   </div>
 
@@ -407,8 +434,9 @@ git switch path-sql
     <span class="ic"><span class="badge b-write">write in it</span></span>
     <div class="body">
       <code>TEST-CASES.md</code>
-      <div class="what">A table to fill in, plus two examples to copy the shape from and a list of
-        edge-case ideas if you're stuck. Your QA lead owns it; everyone contributes.</div>
+      <div class="what">A table to fill in, plus two examples to copy the shape from and lists of
+        case ideas for the screen, for the API, and for edge cases. <strong>6 or more cases, 2 of
+        them edge, 2 about the screen.</strong> Your QA lead owns it; everyone contributes.</div>
     </div>
   </div>
 
